@@ -1,0 +1,334 @@
+﻿<!DOCTYPE HTML>
+<html lang="ru" data-accept-language="en,ru">
+	<head>
+		<title>Морской бой (онлайн-игра для двоих)</title>
+		<meta charset="utf-8" />
+		
+		<link rel="stylesheet" href="/static/css/style.css?v=1307" />
+		<!--[if IE 8]><link rel="stylesheet" href="/static/css/ie8.css" /><![endif]-->
+		
+		<link rel="shortcut icon" href="/static/favicon.ico" />
+		<link rel="apple-touch-icon" href="/static/apple-touch-icon.png" />
+		
+		<script>
+			window.onerror = function (message, file, line) {
+				if (arguments.length > 2) {
+					if (file.indexOf("battleship-game.org") != -1) {
+						(new Image()).src = "/services/error/?key=" + window.name + "&message=" + message + "&ua=" + navigator.userAgent + "&file=" + file + "&line=" + line;
+					}
+				}
+			};
+		</script>
+		
+		<script>
+			var letters = [
+				"А", "Б", "В", "Г", "Д", "Е", "Ж", "З", "И", "К" 
+			];
+		</script>
+		
+		<script src="/static/js/jquery.js"></script>
+		<script src="/static/js/game.js?v=1306"></script>
+		
+		<link rel="alternate" hreflang="x-default" href="http://battleship-game.org/" /><link rel="alternate" hreflang="ru" href="http://ru.battleship-game.org/" /><link rel="alternate" hreflang="en" href="http://en.battleship-game.org/" /><link rel="alternate" hreflang="sr" href="http://sr.battleship-game.org/" /><link rel="alternate" hreflang="it" href="http://it.battleship-game.org/" /><link rel="alternate" hreflang="de" href="http://de.battleship-game.org/" /><link rel="alternate" hreflang="es" href="http://es.battleship-game.org/" /><link rel="alternate" hreflang="fr" href="http://fr.battleship-game.org/" /><link rel="alternate" hreflang="el" href="http://el.battleship-game.org/" /><link rel="alternate" hreflang="pl" href="http://pl.battleship-game.org/" /><link rel="alternate" hreflang="pt" href="http://pt.battleship-game.org/" /><link rel="alternate" hreflang="uk" href="http://uk.battleship-game.org/" /><link rel="alternate" hreflang="sv" href="http://sv.battleship-game.org/" /><link rel="alternate" hreflang="nl" href="http://nl.battleship-game.org/" /><link rel="alternate" hreflang="da" href="http://da.battleship-game.org/" /><link rel="alternate" hreflang="cs" href="http://cs.battleship-game.org/" />
+		
+		<link rel="alternate" hreflang="zh" href="http://zh.battleship-game.org/" />
+		
+		<link rel="author" href="/static/humans.txt" />
+		
+		<meta name="description" content="Морской бой — онлайн-игра для двух соперников. Заходите, расставляйте корабли, дождитесь противника и начинайте играть вдвоем." />
+		
+		<meta name="google-site-verification" content="H9dKy22eCZUymFFpfDkSs8ufVYF83ywTadl5sIBtV9Q" />
+		
+		<meta name="robots" content="noyaca" />
+	</head>
+	<body class="body body__21292262 body__ru">
+		<script>
+			if (top.location != self.location) {
+				document.write('<div class="body-iframe">');
+			}
+		</script>
+		<div class="body-wrap">
+			<header class="header">
+				<h1 class="logo">Морской бой</h1>
+				<div class="none">&#160;— онлайн-игра для двух соперников. Заходите, расставляйте корабли, дождитесь противника и начинайте играть вдвоем.</div>
+			</header>
+			<ul class="langs">
+				<li class="lang lang__cs"><a class="lang-link" href="http://cs.battleship-game.org/" title="Čeština">Čeština</a></li>
+				<li class="lang lang__da"><a class="lang-link" href="http://da.battleship-game.org/" title="Dansk">Dansk</a></li>
+				<li class="lang lang__de"><a class="lang-link" href="http://de.battleship-game.org/" title="Deutsch">Deutsch</a></li>
+				<li class="lang lang__el"><a class="lang-link" href="http://el.battleship-game.org/" title="Ελληνικά">Ελληνικά</a></li>
+				<li class="lang lang__en"><a class="lang-link" href="http://en.battleship-game.org/" title="English">English</a></li>
+				<li class="lang lang__es"><a class="lang-link" href="http://es.battleship-game.org/" title="Español">Español</a></li>
+				<li class="lang lang__fr"><a class="lang-link" href="http://fr.battleship-game.org/" title="Français">Français</a></li>
+				<li class="lang lang__it"><a class="lang-link" href="http://it.battleship-game.org/" title="Italiano">Italiano</a></li>
+				<li class="lang lang__nl"><a class="lang-link" href="http://nl.battleship-game.org/" title="Nederlands">Nederlands</a></li>
+				<li class="lang lang__pl"><a class="lang-link" href="http://pl.battleship-game.org/" title="Polski">Polski</a></li>
+				<li class="lang lang__pt"><a class="lang-link" href="http://pt.battleship-game.org/" title="Português">Português</a></li>
+				<li class="lang lang__ru lang__selected lang__vk"><a class="lang-link" href="http://ru.battleship-game.org/" title="Русский">Русский</a></li>
+				<li class="lang lang__sr"><a class="lang-link" href="http://sr.battleship-game.org/" title="Српски">Српски</a></li>
+				<li class="lang lang__sv"><a class="lang-link" href="http://sv.battleship-game.org/" title="Svenska">Svenska</a></li>
+				<li class="lang lang__uk"><a class="lang-link" href="http://uk.battleship-game.org/" title="Українська">Українська</a></li>
+				<li class="lang lang__zh"><a class="lang-link" href="http://zh.battleship-game.org/" title="中文">中文</a></li>
+			</ul>
+			<div class="notifications-wrap">
+				<div class="notifications">
+					<div class="notification notification__init">
+						<div class="notification-message">Разместите корабли.</div>
+					</div>
+					<div class="notification notification__connect-to-server none">
+						<div class="notification-message">Подключаемся к серверу.</div>
+					</div>
+					<div class="notification notification__waiting-for-rival none">
+						<div class="notification-message">Ожидаем противника.</div>
+					</div>
+					<div class="notification notification__game-started-move-on none">
+						<div class="notification-message">Игра началась, ваш ход.</div>
+					</div>
+					<div class="notification notification__game-started-move-off none">
+						<div class="notification-message">Игра началась, противник ходит.</div>
+					</div>
+					<div class="notification notification__move-on none">
+						<div class="notification-message">Ваш ход.</div>
+					</div>
+					<div class="notification notification__move-off none">
+						<div class="notification-message">Противник ходит, ждите.</div>
+					</div>
+					<div class="notification notification__rival-leave none">
+						<div class="notification-message">Противник покинул игру. Дальнейшая игра невозможна.</div>
+						<input class="notification-submit restart" type="submit" value="Начать новую игру" />
+					</div>
+					<div class="notification notification__game-over-win none">
+						<div class="notification-message">Игра закончена. Поздравляем, вы победили!</div>
+						<input class="notification-submit restart" type="submit" value="Сыграть еще разок" />
+						<script async="async" src="https://yandex.st/share/share.js"></script>
+						<div class="yashare-auto-init" data-yashareL10n="ru" data-yashareLink="http://ru.battleship-game.org/?from=yashare" data-yashareType="none" data-yashareQuickServices="vkontakte,facebook,twitter,odnoklassniki,pinterest,evernote" data-yashareImage="http://static.battleship-game.org/i/image.png"></div>
+					</div>
+					<div class="notification notification__game-over-lose none">
+						<div class="notification-message">Игра закончена. Вы проиграли :-p.</div>
+						<input class="notification-submit restart" type="submit" value="Отыграться" />
+					</div>
+					<div class="notification notification__server-error none">
+						<div class="notification-message">Сервер недоступен.</div>
+					</div>
+					<div class="notification notification__game-error none">
+						<div class="notification-message">Непредвиденная ошибка. Дальнейшая игра невозможна.</div>
+						<input class="notification-submit restart" type="submit" value="Начать новую игру" />
+					</div>
+					<div class="notification notification__cws none">
+						<div class="notification-message">Если вам понравилась игра, пожалуйста, оставьте отзыв о ней в интернет-магазине Google Chrome (это займет не более минуты).</div>
+						<input class="notification-submit notification-submit__accept" type="submit" data-target="http://chrome.google.com/webstore/detail/battleship/hjgmfhnanfbghmpcbdfgpigcgdbaggfm?hl=ru" value="Оставить отзыв" />
+						<input class="notification-submit notification-submit__cancel" type="submit" value="Не сейчас" />
+					</div>
+				</div>
+			</div>
+			<div class="battlefields clearfix">
+				<div class="battlefield battlefield__self">
+					<div class="battlefield-gap">
+						<div class="battlefield-table-placeholder"></div>
+						<div class="battlefield-label">Ваше поле</div>
+						<ul class="placeships">
+							<li class="placeships-variant placeships-variant__randomly">
+								<span class="placeships-variant-link">Случайным образом</span>
+							</li>
+							<li class="placeships-variant placeships-variant__hands">
+								<span class="placeships-variant-link">С чистого листа</span>
+							</li>
+						</ul>
+						<div class="port none">
+							<div class="port-instruction">Перетащите на поле и кликните, чтобы повернуть:</div>
+							<div class="port-lines"></div>
+						</div>
+					</div>
+					<div class="battlefield-stat none"></div>
+				</div>
+				<div class="battlefield battlefield__rival battlefield__wait">
+					<div class="battlefield-gap">
+						<div class="battlefield-table-placeholder"></div>
+						<div class="battlefield-label">Поле противника<div class="battlefield-label-comment">(другой игрок)</div></div>
+						
+						<div class="battlefield-start none">
+							<div class="battlefield-start-gap">
+								<div class="battlefield-start-choose_rival">
+									<h3 class="battlefield-start-choose_rival-label">Противник</h3>
+									<ul class="battlefield-start-choose_rival-variants">
+										<li class="battlefield-start-choose_rival-variant">
+											<a class="battlefield-start-choose_rival-variant-link" href="/">случайный</a>
+										</li>
+										<li class="battlefield-start-choose_rival-variant">
+											<a class="battlefield-start-choose_rival-variant-link battlefield-start-choose_rival-variant-link__connect" href="/">знакомый</a>
+											<div class="battlefield-start-ships_types-gap none">
+												<h4 class="battlefield-start-ships_types-label">Тип флота</h4>
+												<ul class="battlefield-start-ships_types">
+													<li class="battlefield-start-ships_type battlefield-start-ships_type__default">
+														<a class="battlefield-start-ships_type-link" href="/">русский</a>
+													</li>
+													<li class="battlefield-start-ships_type battlefield-start-ships_type__classic">
+														<a class="battlefield-start-ships_type-link" href="/">классический</a>
+													</li>
+												</ul>
+											</div>
+											<div class="battlefield-start-choose_rival-variant-url">
+												<div class="battlefield-start-choose_rival-variant-url-label">Скопируйте и отправьте ему ссылку:</div>
+												<input class="battlefield-start-choose_rival-variant-url-input" type="text" />
+											</div> 
+										</li>
+									</ul>
+								</div>
+								<input class="battlefield-start-button" type="button" value="Играть" />
+							</div>
+						</div>
+					</div>
+					<div class="battlefield-stat none"></div>
+				</div>
+			</div>
+			<div class="chat-gap none">
+				<div class="chat">
+					<input type="text" class="input input__textarea chat-teletype" placeholder="Написать противнику" />
+					<div class="chat-states">
+						<div class="chat-state chat-state__typing chat-state__invisible">Противник печатает...</div>
+					</div>
+					<ul class="chat-messages">
+						<li class="chat-message chat-message__holder none"></li>
+					</ul>
+				</div>
+			</div>
+			<dl class="settings clearfix">
+				<dt class="settings-label">Настройки:</dt>
+				<dd class="setting setting__sound none" data-name="sound">
+					<input class="setting-input" type="checkbox" id="setting__sound" value="1" />
+					<label class="setting-label" for="setting__sound">Включить звук</label>
+				</dd>
+				<dd class="setting setting__shoothint" data-name="shoothint">
+					<input class="setting-input" type="checkbox" id="setting__shoothint" value="1" checked="checked" />
+					<label class="setting-label" for="setting__shoothint">Отмечать «холостые клетки»</label>
+				</dd>
+				<dd class="setting setting__opplang none" data-name="opplang">
+					<input class="setting-input" type="checkbox" id="setting__opplang" value="1" />
+					<label class="setting-label" for="setting__opplang">Select opponent with same language</label>
+				</dd>
+			</dl>
+			<div class="sounds none">
+				<audio class="sound sound__game_started" preload="auto"> 
+					<source src="/static/sound/game_started.mp3" />
+					<source src="/static/sound/game_started.ogg" />
+				</audio>
+				<audio class="sound sound__shoot_missed" preload="auto"> 
+					<source src="/static/sound/missed.mp3" />
+					<source src="/static/sound/missed.ogg" />
+				</audio>
+				<audio class="sound sound__shoot_wounded" preload="auto"> 
+					<source src="/static/sound/wounded.mp3" />
+					<source src="/static/sound/wounded.ogg" />
+				</audio>
+				<audio class="sound sound__shoot_killed" preload="auto"> 
+					<source src="/static/sound/killed.mp3" />
+					<source src="/static/sound/killed.ogg" />
+				</audio>
+				<audio class="sound sound__chat" preload="auto"> 
+					<source src="/static/sound/chat.mp3" />
+					<source src="/static/sound/chat.ogg" />
+				</audio>
+				<audio class="sound sound__click" preload="auto"> 
+					<source src="/static/sound/click.mp3" />
+					<source src="/static/sound/click.ogg" />
+				</audio>
+				<audio class="sound sound__win" preload="auto"> 
+					<source src="/static/sound/win.mp3" />
+					<source src="/static/sound/win.ogg" />
+				</audio>
+				<audio class="sound sound__lose" preload="auto"> 
+					<source src="/static/sound/lose.mp3" />
+					<source src="/static/sound/lose.ogg" />
+				</audio>
+			</div>
+			<div class="leave none" data-confirm="Данные игры будут потеряны!"><a href="./" class="leave-link">Выйти из игры</a></div>
+			<footer class="footer">
+				<div class="copyright clearfix">
+					<span style="float: left">© 2013&#8212;2014 battleship-game.org</span> <span class="copyright-gp">
+						<script async="async" src="https://apis.google.com/js/plusone.js">{lang: "ru"}</script>
+						<div class="g-plusone" data-size="small" data-expandTo="top" data-width="300" data-href="http://ru.battleship-game.org/"></div>
+					</span> <span class="copyright-links"><a class="copyright-link copyright-link__chrome none" href="//chrome.google.com/webstore/detail/battleship/hjgmfhnanfbghmpcbdfgpigcgdbaggfm?hl=ru" target="_blank"><img style="vertical-align: bottom; margin-right: 2px; border: none" src="/static/i/chrome_web_store-32.png" width="16" height="16" alt="Chrome" />Добавить в Chrome</a> <a class="copyright-link copyright-link__rules" href="http://ru.wikipedia.org/wiki/%D0%9C%D0%BE%D1%80%D1%81%D0%BA%D0%BE%D0%B9_%D0%B1%D0%BE%D0%B9_(%D0%B8%D0%B3%D1%80%D0%B0)" target="_blank">Правила игры</a> <a class="copyright-link" href="mailto:info@battleship-game.org">Сообщить о проблеме</a></span>
+				</div>
+			</footer>
+		</div>
+		
+		<!-- sda -->
+		<script>
+			(function () {
+				function shuffle(o) {
+					for (var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+					
+					return o;
+				}
+				
+				var sda = [
+					'<div class="sda-block sda-block__google"><script async="async" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></s' + 'cript><ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-2693394875594183" data-ad-slot="2533875692"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</' + 'script></div>', 
+					
+					'<div class="sda-block sda-block__local"><div class="sda-block-gap"><div class="durak">Разложите <a class="durak-link" href="http://razlozhi.ru/?from=mb">пасьянсы</a>, <a href="http://razlozhi.ru/durak/2-players?from=mb">сыграйте в «Дурака»</a> или попробуйте новую игру «<a href="http://ru.dots-game.org/?from=mb">Точки и палочки</a>»</div></div></div>',
+					
+					'<div class="sda-block sda-block__local"><div class="sda-block-gap">Try a new logic game «<a href="http://en.dots-game.org/?from=mb">Dots and Boxes</a>»</div></div>',
+					
+					'<div class="sda-block sda-block__local"><div class="sda-block-gap">Zagraj w nową grę «<a href="http://pl.dots-game.org/?from=mb">Szewc</a>»</div></div>',
+					
+					'<div class="sda-block sda-block__local"><div class="sda-block-gap">Jouer un nouveau jeu «<a href="http://fr.dots-game.org/?from=mb">La Pipopipette</a>»</div></div>',
+					
+					'<div class="sda-block sda-block__local"><div class="sda-block-gap">Speel een nieuw spel «<a href="http://nl.dots-game.org/?from=mb">Kamertje verhuren</a>»</div></div>', 
+					
+					'<div class="sda-block sda-block__local"><div class="sda-block-gap">Ein neues Spiel zu spielen «<a href="http://de.dots-game.org/?from=mb">Käsekästchen</a>»</div></div>',
+					
+					'<div class="sda-block sda-block__local"><div class="sda-block-gap">Prova un nuovo gioco di logica «<a href="http://it.dots-game.org/?from=mb">Punti e linee</a>»</div></div>',
+					
+					'<div class="sda-block sda-block__local"><div class="sda-block-gap">Love games? Try playing offline quest game at <a class="link" href="http://saveamsterdam.com/?from=mb">#SaveAmsterdam</a>.</div></div>',
+					
+					'<div class="sda-block sda-block__google"><script async="async" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></s' + 'cript><ins class="adsbygoogle" style="display:inline-block;width:728px;height:15px" data-ad-client="ca-pub-2693394875594183" data-ad-slot="6105552097"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</' + 'script></div>'
+				];
+				
+				var pos = 0;
+				
+				function matchLanguage(lang) {
+					return location.host.indexOf(lang + ".") != -1 
+						|| location.pathname.indexOf("/" + lang + "/") != -1;
+				}
+				
+				if (matchLanguage("ru")) {
+					if (document.referrer.indexOf("razlozhi.") == -1 && location.search.indexOf("rzlzh") == -1) {
+						pos = shuffle([0, 1])[0];
+					}
+				} else if (matchLanguage("en")) {
+					pos = 8; //shuffle([0, 2])[0];
+				} else if (matchLanguage("pl")) {
+					pos = shuffle([0, 3])[0];
+				} else if (matchLanguage("fr")) {
+					pos = shuffle([0, 4])[0];
+				} else if (matchLanguage("nl")) {
+					pos = 8;
+				} else if (matchLanguage("de")) {
+					pos = shuffle([0, 6])[0];
+				} else if (matchLanguage("it")) {
+					pos = shuffle([0, 7])[0];
+				} else if (matchLanguage("vk")) {
+					pos = 0;
+				}
+				
+				try {
+					if (matchLanguage("vk") || top.location == self.location) {
+						document.write('<div class="sda sda__vh" id="sda">' + sda[pos] + '</div>');
+					}
+				} catch (exception) {}
+			})();
+		</script>
+		<!-- //sda -->
+		
+		<script>
+			if (top.location != self.location) {
+				document.write('</div>');
+			}
+		</script>
+		
+		<script>
+			(function(b,c,a){(c[a]=c[a]||[]).push(function(){try{c.yaCounter20587900=new Ya.Metrika({id:20587900,clickmap:!0,trackLinks:!0,accurateTrackBounce:!0})}catch(a){}});var e=b.getElementsByTagName("script")[0],d=b.createElement("script");a=function(){e.parentNode.insertBefore(d,e)};d.async=!0;d.src=("https:"==b.location.protocol?"https:":"http:")+"//mc.yandex.ru/metrika/watch.js";"[object Opera]"==c.opera?b.addEventListener("DOMContentLoaded",a,!1):a()})(document,window,"yandex_metrika_callbacks");
+			
+			(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b;a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)};a[b].l=1*new Date;c=e.createElement(f);d=e.getElementsByTagName(f)[0];c.async=1;c.src=g;d.parentNode.insertBefore(c,d)})(window,document,"script","//www.google-analytics.com/analytics.js","ga");ga("create","UA-45008948-1","battleship-game.org");ga("send","pageview");
+		</script>
+	</body>
+</html>
