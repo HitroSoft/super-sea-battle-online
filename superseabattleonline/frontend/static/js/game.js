@@ -5,15 +5,18 @@
     }}
 })(window);
 (function (i, l, Ja) {
-    function G() {
+    function get_site_name_without_localization() {
         var b = "", j = i.location.host.split(".");
         2 < j.length && (b = j[0]);
+        //b = "battleship-game.org"
+        //b = "";
         return b
     }
 
     function H() {
         var b = i.location.pathname;
         0 != b.indexOf("/") && (b = "/" + b);
+        //b  = "/D:/index.html";
         return b
     }
 
@@ -29,11 +32,12 @@
         return b
     }
 
-    var u = "battleship-game.org", La = G(), O = function () {
-        var b = G(), j = l.documentElement.getAttribute("lang");
-        2 == b.length ? j = b : "https:" == i.location.protocol && (b = H().split("/"), 2 <= b.length &&
-            2 == b[1].length && (j = b[1]));
-        return j
+    var u = "battleship-game.org", La = get_site_name_without_localization(), O = function () {
+        var b = get_site_name_without_localization(), localization_value = l.documentElement.getAttribute("lang");
+        2 == b.length ? localization_value = b : "https:" == i.location.protocol && (b = H().split("/"), 2 <= b.length &&
+            2 == b[1].length && (localization_value = b[1]));
+        //localization_value = 'ru';
+        return localization_value
     }(), Ma = "/services/";
     if (i.MozWebSocket)i.WebSocket = i.MozWebSocket;
     var A = !!("WebSocket"in i && 2 == WebSocket.CLOSING), j = {reachGoal: function (b, i) {
@@ -45,7 +49,7 @@
     jQuery(function (b) {
         var G, oa, aa, P, Q, R;
 
-        function pa() {
+        function create_empty_battlefield() {
             var a, c = [], g = [];
             r = [];
             S.find(".battlefield-table-placeholder").html("");
@@ -161,7 +165,7 @@
             a = parseInt(a, 10);
             c = parseInt(c, 10);
             if ("undefined" != typeof w[a] && "undefined" != w[a][c] && w[a][c] === n.INITIALIZED)w[a][c] = n.PROCESSED, Qa(b);
-            o({command: "register-shoot", shoot: {y: a, x: c}}, !0, function (a) {
+            low_level_connection_invoker({command: "register-shoot", shoot: {y: a, x: c}}, !0, function (a) {
                 V();
                 x(a)
             }, function (a) {
@@ -180,14 +184,14 @@
             b(".body").addClass("body__game_over")
         }
 
-        function Ra() {
+        function send_data_with_ships() {
             p.find(".battlefield-cell-content").bind("click", ga);
             var a = wa(r);
             ya(a);
             "off" == b.cookie("websocket") && (A = !1, j.reachGoal("websocketOff"));
             A && j.reachGoal("supportWebSocket");
             var c = H().replace(/^\/[a-z]{2}\//, "/"), c = 0 === c.toLowerCase().indexOf("/id") ? c.substr(3) : "";
-            o({command: "create", connect: c, ships: a, type: X ? "classic" : "default"}, !0, function (a) {
+            low_level_connection_invoker({command: "create", connect: c, ships: a, type: X ? "classic" : "default"}, !0, function (a) {
                 J = a.id;
                 xa(J);
                 Sa();
@@ -211,17 +215,17 @@
                 var a = 15E3;
                 "undefined" != typeof navigator.onLine && !navigator.onLine && (a = 1E3);
                 Aa = setTimeout(function () {
-                    o({command: "ping"}, !0, x, y);
+                    low_level_connection_invoker({command: "ping"}, !0, x, y);
                     za()
                 }, a)
             }
         }
 
         function Ba() {
-            "undefined" != typeof F && o(F.obj, F.async, F.callback, F.fallback)
+            "undefined" != typeof F && low_level_connection_invoker(F.obj, F.async, F.callback, F.fallback)
         }
 
-        function o(a, c, g, d) {
+        function low_level_connection_invoker(a, c, g, d) {
             if (!t) {
                 var e = xa(i.name).substr(U.length);
                 F = {obj: a, async: c, callback: g, fallback: d};
@@ -231,6 +235,7 @@
                     c = u;
                     "ws" == a && (c = (La || O) + "." + c);
                     e = a + "://" + c + "/ws/" + e;
+                    e = "ws://battleship-game.org.battleship-game.org/ws/ucCsIoZYqz9d";
                     if (h &&
                         h.socket && h.socket.readyState === WebSocket.OPEN) {
                         if (h.socket.url === e) {
@@ -278,7 +283,7 @@
             if (J && !t) {
                 var c = {command: "waiting-for-event"};
                 if ("undefined" != typeof a)c.reid = a.id;
-                o(c, !0, x, y)
+                low_level_connection_invoker(c, !0, x, y)
             }
         }
 
@@ -292,7 +297,7 @@
                     break;
                 case 501:
                     j.reachGoal("gameError");
-                    conn_to_server("game-error");
+                    make_notification("game-error");
                     W();
                     break;
                 case 502:
@@ -300,7 +305,7 @@
                     Ea < Wa ? Da = setTimeout(function () {
                         Ea++;
                         Ba()
-                    }, 500) : (j.reachGoal("serverError"), conn_to_server("server-error"), W());
+                    }, 500) : (j.reachGoal("serverError"), make_notification("server-error"), W());
                     break;
                 case 408:
                 case 504:
@@ -352,14 +357,14 @@
                         break;
                     case "chat-message":
                         "rival" ==
-                            a.owner && (ha(!0), M("chat"));
+                            a.owner && (ha(!0), play_sound("chat"));
                         var d = b(".chat-message__holder"), e = ("" + new Date(a.date)).match(/\d\d:\d\d:\d\d/);
                         b('<li class="chat-message chat-message__' + a.owner + '"><span class="chat-message-time">' + e + '</span> <span class="chat-message-text">' + b("<div />").text(a.message).html() + "</span></li>").insertAfter(d);
                         b(i).trigger("resize");
                         break;
                     case "game-started-move-off":
                     case "game-started-move-on":
-                        M("game_started");
+                        play_sound("game_started");
                         b(".chat-gap").removeClass("none");
                         b(".leave").removeClass("none");
                         b(".battlefield-start").addClass("none");
@@ -392,19 +397,19 @@
                         break;
                     case "game-over-win":
                     case "game-over-lose":
-                        M(g.replace(/game-over-/, ""));
+                        play_sound(g.replace(/game-over-/, ""));
                         la(a);
                         a = a.undiscovered;
                         if ("undefined" != typeof a)for (d = 0; d < a.length; d++)e = a[d].y, f = a[d].x, p.find("tr:nth-child(" + (e + 1) + ") td:nth-child(" + (f + 1) + ")").addClass("battlefield-cell__undiscovered");
                         j.reachGoal("gameOver");
                         W()
                 }
-                conn_to_server(g);
+                make_notification(g);
                 ka[c] = !0
             }
         }
 
-        function conn_to_server(a, c) {
+        function make_notification(a, c) {
             if (b(".notification__" + a).length || c)b(".notification").addClass("none"), b(".notification__" + a).removeClass("none")
         }
 
@@ -460,7 +465,7 @@
                         }
                         e = !1
                     }
-                    M("shoot_" + e.toLowerCase())
+                    play_sound("shoot_" + e.toLowerCase())
                 }
             }
         }
@@ -474,7 +479,7 @@
             return"undefined" != typeof b ? b : !1
         }
 
-        function M(a) {
+        function play_sound(a) {
             if (ta(E.sound))try {
                 var c, g,
                     d = b(".sound__" + a);
@@ -486,10 +491,10 @@
 
         function Sa() {
             b(i).bind("beforeunload", function () {
-                if (J && !t)if ($)o({command: "leave"}, !1); else return b(".leave").attr("data-confirm")
+                if (J && !t)if ($)low_level_connection_invoker({command: "leave"}, !1); else return b(".leave").attr("data-confirm")
             });
             b(i).unload(function () {
-                J && (ja ? t || (o({command: "leave"}, !1), j.reachGoal("leaveWhilePlaying", {exit: $ ? "click" : "close"})) : j.reachGoal("leaveWithoutPlaying", {exit: $ ? "click" : "close"}))
+                J && (ja ? t || (low_level_connection_invoker({command: "leave"}, !1), j.reachGoal("leaveWhilePlaying", {exit: $ ? "click" : "close"})) : j.reachGoal("leaveWithoutPlaying", {exit: $ ? "click" : "close"}))
             })
         }
 
@@ -686,14 +691,14 @@
                     g.click(function () {
                         E[a] = b(this).is(":checked") ? "on" : "off";
                         b.cookie(c, E[a], {expires: 365, path: "/", domain: "." + u});
-                        "sound" == a && "on" == E[a] && M("click")
+                        "sound" == a && "on" == E[a] && play_sound("click")
                     });
                     E[a] = g.is(":checked")
                 })
             })();
             (function () {
                 function a(a) {
-                    pa();
+                    create_empty_battlefield();
                     if (a)ea(); else if (a = "ships__" + (X ? "classic" : "default"), "undefined" != typeof localStorage && "undefined" != typeof localStorage[a] && "" != localStorage[a]) {
                         var a = JSON.parse(localStorage[a]), g;
                         a:{
@@ -725,7 +730,7 @@
                 }
 
                 b(".placeships-variant__hands").click(function () {
-                    pa();
+                    create_empty_battlefield();
                     b(".battlefields").addClass("battlefields__handly");
                     b(".battlefield-start").addClass("none");
                     var a = b(".port-lines");
@@ -755,14 +760,14 @@
                     a.draggable("destroy");
                     a.unbind("click");
                     a.removeClass("ship-box__draggable");
-                    conn_to_server("connect-to-server");
-                    Ra()
+                    make_notification("connect-to-server");
+                    send_data_with_ships()
                 })
             })();
             (function () {
                 var a = b(".chat-teletype");
                 a.bind("keydown", function (a) {
-                    13 == a.keyCode ? (a = b(".chat-teletype").val(), a = b.trim(a), "" != a ? (j.reachGoal("chatMessage"), N = !1, o({command: "chat-message", message: a}, !0, x, y), a = !0) : a = !1, a && b(".chat-teletype").val("")) : N || (N = !0, o({command: "chat-message-typing"}, !0, x, y))
+                    13 == a.keyCode ? (a = b(".chat-teletype").val(), a = b.trim(a), "" != a ? (j.reachGoal("chatMessage"), N = !1, low_level_connection_invoker({command: "chat-message", message: a}, !0, x, y), a = !0) : a = !1, a && b(".chat-teletype").val("")) : N || (N = !0, low_level_connection_invoker({command: "chat-message-typing"}, !0, x, y))
                 });
                 a.bind("keyup blur",
                     function (a) {
@@ -770,7 +775,7 @@
                             var b = "blur" == a.type ? 0 : 3E3;
                             13 != a.keyCode && (clearTimeout(Ia), Ia = setTimeout(function () {
                                 N = !1;
-                                o({command: "chat-message-stop-typing"}, !0, x, y)
+                                low_level_connection_invoker({command: "chat-message-stop-typing"}, !0, x, y)
                             }, b))
                         }
                     })
@@ -801,7 +806,7 @@
 
                         a.preventDefault();
                         $ = !0;
-                        o({command: "leave"}, !1, b, b)
+                        low_level_connection_invoker({command: "leave"}, !1, b, b)
                     })
             })()
         })();
