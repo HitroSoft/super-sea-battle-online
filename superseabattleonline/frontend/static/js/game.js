@@ -5,7 +5,7 @@
     }}
 })(window);
 (function (i, l, Ja) {
-    function get_site_name_without_localization() {
+    function get_site_localization_from_domain_name() {
         var b = "", j = i.location.host.split(".");
         2 < j.length && (b = j[0]);
         //b = "battleship-game.org"
@@ -13,28 +13,28 @@
         return b
     }
 
-    function H() {
+    function add_slash_before_pathname() {
         var b = i.location.pathname;
         0 != b.indexOf("/") && (b = "/" + b);
         //b  = "/D:/index.html";
         return b
     }
 
-    function na() {
+    function protocol_type_http_or_https() {
         var b = "http";
         "https:" == i.location.protocol && (b += "s");
         return b
     }
 
-    function Ka() {
+    function protocol_type_ws_or_wss_if_https() {
         var b = "ws";
         "https:" == i.location.protocol && (b += "s");
         return b
     }
 
-    var u = "battleship-game.org", La = get_site_name_without_localization(), O = function () {
-        var b = get_site_name_without_localization(), localization_value = l.documentElement.getAttribute("lang");
-        2 == b.length ? localization_value = b : "https:" == i.location.protocol && (b = H().split("/"), 2 <= b.length &&
+    var u = "battleship-game.org", La = get_site_localization_from_domain_name(), function_which_returns_localization_value = function () {
+        var b = get_site_localization_from_domain_name(), localization_value = l.documentElement.getAttribute("lang");
+        2 == b.length ? localization_value = b : "https:" == i.location.protocol && (b = add_slash_before_pathname().split("/"), 2 <= b.length &&
             2 == b[1].length && (localization_value = b[1]));
         //localization_value = 'ru';
         return localization_value
@@ -46,7 +46,7 @@
         } catch (j) {
         }
     }};
-    jQuery(function (b) {
+    jQuery(function (main_object) {
         var G, oa, aa, P, Q, R;
 
         function create_empty_battlefield() {
@@ -61,7 +61,7 @@
                     '<div class="marker marker__col">' + Na[e] + "</div>"), g.push('<td class="battlefield-cell battlefield-cell__empty"><div class="battlefield-cell-content" data-y="' + d + '" data-x="' + e + '" >' + a + "</div></td>"), B[d][e] = aa, ba[d][e] = n.INITIALIZED, w[d][e] = n.INITIALIZED;
                 c.push('<tr class="battlefield-row">' + g.join("") + "</tr>")
             }
-            a = b('<table class="battlefield-table">' + c.join("") + "</table>");
+            a = main_object('<table class="battlefield-table">' + c.join("") + "</table>");
             S.find(".battlefield-table-placeholder").append(a)
         }
 
@@ -121,7 +121,7 @@
         function ua(a, c, g) {
             var d = 1, e = a, f = 0, k = a - 1;
             "h" == c && (d = a, e = 1, f = a - 1, k = 0);
-            return b('<div data-id="' + (g || "") + '" data-length="' + a + '" data-position="' + c + '" class="ship-box ship-box__' + c + '" style="width: ' + 2 * d + "em; height: " + 2 * e + "em; padding-right: " + f + "px; padding-bottom: " + k + 'px;" />')
+            return main_object('<div data-id="' + (g || "") + '" data-length="' + a + '" data-position="' + c + '" class="ship-box ship-box__' + c + '" style="width: ' + 2 * d + "em; height: " + 2 * e + "em; padding-right: " + f + "px; padding-bottom: " + k + 'px;" />')
         }
 
         function va(a, c, b, d, e, f) {
@@ -148,7 +148,7 @@
         }
 
         function ga() {
-            var a = b(this), c = a.attr("data-x"), g = a.attr("data-y");
+            var a = main_object(this), c = a.attr("data-x"), g = a.attr("data-y");
             p.hasClass("battlefield__processed") || Pa(g, c, a)
         }
 
@@ -175,22 +175,22 @@
         }
 
         function ha(a) {
-            var c = b(".chat-state__typing");
+            var c = main_object(".chat-state__typing");
             a ? c.addClass("chat-state__invisible") : c.removeClass("chat-state__invisible")
         }
 
         function W() {
             t = !0;
-            b(".body").addClass("body__game_over")
+            main_object(".body").addClass("body__game_over")
         }
 
         function send_data_with_ships() {
             p.find(".battlefield-cell-content").bind("click", ga);
             var a = wa(r);
             ya(a);
-            "off" == b.cookie("websocket") && (A = !1, j.reachGoal("websocketOff"));
+            "off" == main_object.cookie("websocket") && (A = !1, j.reachGoal("websocketOff"));
             A && j.reachGoal("supportWebSocket");
-            var c = H().replace(/^\/[a-z]{2}\//, "/"), c = 0 === c.toLowerCase().indexOf("/id") ? c.substr(3) : "";
+            var c = add_slash_before_pathname().replace(/^\/[a-z]{2}\//, "/"), c = 0 === c.toLowerCase().indexOf("/id") ? c.substr(3) : "";
             low_level_connection_invoker({command: "create", connect: c, ships: a, type: X ? "classic" : "default"}, !0, function (a) {
                 J = a.id;
                 xa(J);
@@ -231,9 +231,9 @@
                 F = {obj: a, async: c, callback: g, fallback: d};
                 var f = JSON.stringify(a);
                 if (A) {
-                    a = Ka();
+                    a = protocol_type_ws_or_wss_if_https();
                     c = u;
-                    "ws" == a && (c = (La || O) + "." + c);
+                    "ws" == a && (c = (La || function_which_returns_localization_value) + "." + c);
                     e = a + "://" + c + "/ws/" + e;
                     e = "ws://battleship-game.org.battleship-game.org/ws/ucCsIoZYqz9d";
                     if (h &&
@@ -255,7 +255,7 @@
                     };
                     h.socket.onclose = function (a) {
                         "undefined" != typeof a.code && 1E3 != a.code && ("undefined" != typeof navigator.onLine && !navigator.onLine ? this.ajax.fallback.call(i, {status: 0}) :
-                            (this.ajax.fallback.call(i, {status: 502}), Ca++, Ca >= Ua && (A = !1, b.cookie("websocket", "off", {expires: 7, path: "/", domain: "." + u}), j.reachGoal("fromWebSocketToLongPolling")), j.reachGoal("webSocketClose", {code: "" + a.code})))
+                            (this.ajax.fallback.call(i, {status: 502}), Ca++, Ca >= Ua && (A = !1, main_object.cookie("websocket", "off", {expires: 7, path: "/", domain: "." + u}), j.reachGoal("fromWebSocketToLongPolling")), j.reachGoal("webSocketClose", {code: "" + a.code})))
                     }.bind(h);
                     h.socket.onerror = function () {
                         h.socket && h.socket.readyState && h.socket.readyState === WebSocket.OPEN && h.socket.close();
@@ -267,7 +267,7 @@
                         200 != a.status ? this.ajax.fallback.call(i, a) : this.ajax.callback.call(i,
                             a)
                     }.bind(h)
-                } else c = "undefined" == typeof c || c ? !0 : !1, h && 4 != h.readyState && h.abort && h.abort(), h = b.ajax({cache: !1, type: "post", dataType: "json", contentType: "application/json", url: Ma + e, data: f, async: c, error: d, success: g})
+                } else c = "undefined" == typeof c || c ? !0 : !1, h && 4 != h.readyState && h.abort && h.abort(), h = main_object.ajax({cache: !1, type: "post", dataType: "json", contentType: "application/json", url: Ma + e, data: f, async: c, error: d, success: g})
             }
         }
 
@@ -337,7 +337,7 @@
         function Va(a) {
             var c = a.name + "," + a.id;
             if ("undefined" == typeof ka[c] && (ka[c] = !1, Xa(), !t)) {
-                b(".body__game_over").removeClass("body__game_over");
+                main_object(".body__game_over").removeClass("body__game_over");
                 var g = a.name, a = a.payload;
                 switch (g) {
                     case "rival-leave":
@@ -345,8 +345,8 @@
                         W();
                         break;
                     case "waiting-for-rival":
-                        b(".leave").removeClass("none");
-                        b(".battlefield-start-hint").removeClass("none");
+                        main_object(".leave").removeClass("none");
+                        main_object(".battlefield-start-hint").removeClass("none");
                         z.addClass("battlefield__wait");
                         break;
                     case "chat-message-typing":
@@ -358,17 +358,17 @@
                     case "chat-message":
                         "rival" ==
                             a.owner && (ha(!0), play_sound("chat"));
-                        var d = b(".chat-message__holder"), e = ("" + new Date(a.date)).match(/\d\d:\d\d:\d\d/);
-                        b('<li class="chat-message chat-message__' + a.owner + '"><span class="chat-message-time">' + e + '</span> <span class="chat-message-text">' + b("<div />").text(a.message).html() + "</span></li>").insertAfter(d);
-                        b(i).trigger("resize");
+                        var d = main_object(".chat-message__holder"), e = ("" + new Date(a.date)).match(/\d\d:\d\d:\d\d/);
+                        main_object('<li class="chat-message chat-message__' + a.owner + '"><span class="chat-message-time">' + e + '</span> <span class="chat-message-text">' + main_object("<div />").text(a.message).html() + "</span></li>").insertAfter(d);
+                        main_object(i).trigger("resize");
                         break;
                     case "game-started-move-off":
                     case "game-started-move-on":
                         play_sound("game_started");
-                        b(".chat-gap").removeClass("none");
-                        b(".leave").removeClass("none");
-                        b(".battlefield-start").addClass("none");
-                        b(".battlefield-stat").removeClass("none");
+                        main_object(".chat-gap").removeClass("none");
+                        main_object(".leave").removeClass("none");
+                        main_object(".battlefield-start").addClass("none");
+                        main_object(".battlefield-stat").removeClass("none");
                         p.removeClass("none");
                         ja = !0;
                         t = !1;
@@ -381,7 +381,7 @@
                             }
                             a.push('<div class="ship-type ship-type__len_' + e.size + '">' + f.join("") + "</div>")
                         }
-                        b(".battlefield-stat").html('<div class="ship-types">' +
+                        main_object(".battlefield-stat").html('<div class="ship-types">' +
                             a.join("") + "</div>").removeClass("none");
                         break;
                     case "move-on":
@@ -410,7 +410,7 @@
         }
 
         function make_notification(a, c) {
-            if (b(".notification__" + a).length || c)b(".notification").addClass("none"), b(".notification__" + a).removeClass("none")
+            if (main_object(".notification__" + a).length || c)main_object(".notification").addClass("none"), main_object(".notification__" + a).removeClass("none")
         }
 
         function la(a) {
@@ -418,7 +418,7 @@
                 var c = !1, g = z, d = ba, e = a["register-self-shoot"] || a["register-rival-shoot"], f = "battlefield-cell__miss";
                 "undefined" != typeof a["register-self-shoot"] && (c = !0);
                 if (e && "undefined" != e.state && (e.state >= n.WOUNDED && (f = "battlefield-cell__hit"), e.state === n.KILLED && (f += " battlefield-cell__done"), c ? (g = p,
-                    d = w) : (b(".battlefield-cell__last").removeClass("battlefield-cell__last"), f += " battlefield-cell__last"), !(d[e.y][e.x] >= n.MISSED))) {
+                    d = w) : (main_object(".battlefield-cell__last").removeClass("battlefield-cell__last"), f += " battlefield-cell__last"), !(d[e.y][e.x] >= n.MISSED))) {
                     d[e.y][e.x] = e.state;
                     a = g.find("tr:nth-child(" + (e.y + 1) + ") td:nth-child(" + (e.x + 1) + ")");
                     a.removeClass("battlefield-cell__empty").addClass(f);
@@ -470,7 +470,7 @@
             }
         }
 
-        function Ya() {
+        function which_soundfiles_available() {
             if ("undefined" == typeof Audio)return!1;
             for (var a = new Audio, c = ["ogg", "mp3"], b, d = 0; d < c.length; d++)if (a.canPlayType("audio/" + c[d])) {
                 b = c[d];
@@ -482,7 +482,7 @@
         function play_sound(a) {
             if (ta(E.sound))try {
                 var c, g,
-                    d = b(".sound__" + a);
+                    d = main_object(".sound__" + a);
                 c = "game_started" == a || "chat" == a ? d : g = d.clone();
                 /(ipad|iphone)/i.test(i.navigator.userAgent) ? d.get(0).play() : c.get(0).play()
             } catch (e) {
@@ -490,31 +490,31 @@
         }
 
         function Sa() {
-            b(i).bind("beforeunload", function () {
-                if (J && !t)if ($)low_level_connection_invoker({command: "leave"}, !1); else return b(".leave").attr("data-confirm")
+            main_object(i).bind("beforeunload", function () {
+                if (J && !t)if ($)low_level_connection_invoker({command: "leave"}, !1); else return main_object(".leave").attr("data-confirm")
             });
-            b(i).unload(function () {
+            main_object(i).unload(function () {
                 J && (ja ? t || (low_level_connection_invoker({command: "leave"}, !1), j.reachGoal("leaveWhilePlaying", {exit: $ ? "click" : "close"})) : j.reachGoal("leaveWithoutPlaying", {exit: $ ? "click" : "close"}))
             })
         }
 
         function Ta() {
-            b(i).bind("online", function () {
+            main_object(i).bind("online", function () {
                 j.reachGoal("online");
-                b(".body").removeClass("body__offline")
+                main_object(".body").removeClass("body__offline")
             });
-            b(i).bind("offline", function () {
-                b(".body").addClass("body__offline")
+            main_object(i).bind("offline", function () {
+                main_object(".body").addClass("body__offline")
             })
         }
 
         function Za() {
-            var a = b(".battlefield-cell-content").last();
+            var a = main_object(".battlefield-cell-content").last();
             return{height: a.height(), width: a.width()}
         }
 
         function $a() {
-            var a = b(this);
+            var a = main_object(this);
             if (!a.closest(".port").length) {
                 var c = a.css("height"), g = a.css("width");
                 if (c !== g) {
@@ -532,7 +532,7 @@
                         a.removeClass("ship-box__h ship-box__v").addClass("ship-box__" + h);
                         a.attr("data-position", h);
                         v(e, f, i, j, !1, d)
-                    } else v(e, f, i, h, !1, d), c = {duration: 250}, a = b(".ship-box[data-id=" + d + "]"), a.addClass("ship-box__placeholder_error"), clearTimeout(Ga), a.stop(!0).shake(c), Ga = setTimeout(function () {
+                    } else v(e, f, i, h, !1, d), c = {duration: 250}, a = main_object(".ship-box[data-id=" + d + "]"), a.addClass("ship-box__placeholder_error"), clearTimeout(Ga), a.stop(!0).shake(c), Ga = setTimeout(function () {
                             a.removeClass("ship-box__placeholder_error")
                         },
                         c.duration)
@@ -549,27 +549,27 @@
                 }
             }
 
-            b(".ship-box:not(.ship-box__draggable)").draggable({create: function () {
-                b(this).addClass("ship-box__draggable");
-                b(this).bind("click", $a)
+            main_object(".ship-box:not(.ship-box__draggable)").draggable({create: function () {
+                main_object(this).addClass("ship-box__draggable");
+                main_object(this).bind("click", $a)
             }, start: function (a, b) {
                 qa(b.helper.attr("data-id"))
             }, stop: function (c, g) {
                 var d = g.helper;
                 d.removeClass("ship-box__transparent");
-                b(".ship-box__placeholder").length ? (b(".ship-box__placeholder").before(d), b(".ship-box__placeholder").remove(), a(d), b(".placeships-variant__hands_inactive").removeClass("placeships-variant__hands_inactive"), setTimeout(function () {
-                    b(".port .ship-box").length || (b(".battlefields").removeClass("battlefields__handly"), b(".battlefield-start").removeClass("none"))
+                main_object(".ship-box__placeholder").length ? (main_object(".ship-box__placeholder").before(d), main_object(".ship-box__placeholder").remove(), a(d), main_object(".placeships-variant__hands_inactive").removeClass("placeships-variant__hands_inactive"), setTimeout(function () {
+                    main_object(".port .ship-box").length || (main_object(".battlefields").removeClass("battlefields__handly"), main_object(".battlefield-start").removeClass("none"))
                 }, 500)) : a(d);
                 d.css({left: 0, top: 0, margin: "-2px"})
             }, drag: function (a, g) {
-                var d = b(this), e = d.clone(!1);
+                var d = main_object(this), e = d.clone(!1);
                 e.removeClass("ui-draggable ui-draggable-dragging ship-box__transparent").addClass("ship-box__placeholder").css({left: 0,
                     top: 0, margin: "-2px"});
-                b(".battlefield__self .battlefield-cell-content").find(".ship-box__placeholder").remove();
+                main_object(".battlefield__self .battlefield-cell-content").find(".ship-box__placeholder").remove();
                 var f = Za(), h = g.offset.top + f.height / 2, i = g.offset.left + f.width / 2;
                 d.removeClass("ship-box__transparent");
-                b(".battlefield__self .battlefield-cell-content").each(function () {
-                    var a = b(this), c = a.offset(), f = a.width(), g = a.height();
+                main_object(".battlefield__self .battlefield-cell-content").each(function () {
+                    var a = main_object(this), c = a.offset(), f = a.width(), g = a.height();
                     if (i >= c.left && i <= c.left + f && h >= c.top && h <= c.top + g) {
                         var c = parseInt(a.attr("data-y"), 10), f = parseInt(a.attr("data-x"), 10), g = parseInt(d.attr("data-length"), 10), j = d.attr("data-position");
                         v(c, f, g, j, !0, Ja) && (a.append(e), d.addClass("ship-box__transparent"));
@@ -598,7 +598,7 @@
         }
 
         var U = "battleship__", E = {}, h, F, Ea = 0, Wa = 10, Da, Ca = 0, Ua = 5, J, ka = {}, Aa, N = !1, Ia, L =
-            !0, Fa, K, ja = !1, t = !1, $ = !1, S = b(".battlefield"), z = S.filter(".battlefield__self"), p = S.filter(".battlefield__rival");
+            !0, Fa, K, ja = !1, t = !1, $ = !1, S = main_object(".battlefield"), z = S.filter(".battlefield__self"), p = S.filter(".battlefield__rival");
         Q = 10;
         R = 10;
         aa = 0;
@@ -646,30 +646,30 @@
             return this
         };
         (function () {
-            2 == O.length && b.cookie("lang", O, {expires: 365, path: "/", domain: "." + u});
+            2 == function_which_returns_localization_value.length && main_object.cookie("lang", function_which_returns_localization_value, {expires: 365, path: "/", domain: "." + u});
             (function () {
                 (function () {
                     var a = "";
-                    "https" == na() && (a = "/" + O);
-                    var c = H().replace(/^\/[a-z]{2}\//, "/");
-                    b(".battlefield-start-choose_rival-variant-link").attr("href",
+                    "https" == protocol_type_http_or_https() && (a = "/" + function_which_returns_localization_value);
+                    var c = add_slash_before_pathname().replace(/^\/[a-z]{2}\//, "/");
+                    main_object(".battlefield-start-choose_rival-variant-link").attr("href",
                         a + "/");
-                    var g = b(".battlefield-start-choose_rival-variant-link__connect");
+                    var g = main_object(".battlefield-start-choose_rival-variant-link__connect");
                     g.attr("href");
                     0 === c.toLowerCase().indexOf("/id") ? g.attr("href", a + c) : g.attr("href", a + "/id" + T(1E7, 99999999))
                 })();
-                b(".battlefield-start-choose_rival-variant-link").click(function () {
+                main_object(".battlefield-start-choose_rival-variant-link").click(function () {
                     ya()
                 });
                 (function () {
-                    b(".battlefield-start-choose_rival-variant").removeClass("battlefield-start-choose_rival-variant__active");
-                    b(".battlefield-start-choose_rival-variant-link").each(function () {
-                        if (b(this).attr("href") == H() && (b(this).closest(".battlefield-start-choose_rival-variant").addClass("battlefield-start-choose_rival-variant__active"),
-                            b(this).is(".battlefield-start-choose_rival-variant-link__connect"))) {
-                            var a = b(this).closest(".battlefield-start-choose_rival-variant").find(".battlefield-start-choose_rival-variant-url-input");
+                    main_object(".battlefield-start-choose_rival-variant").removeClass("battlefield-start-choose_rival-variant__active");
+                    main_object(".battlefield-start-choose_rival-variant-link").each(function () {
+                        if (main_object(this).attr("href") == add_slash_before_pathname() && (main_object(this).closest(".battlefield-start-choose_rival-variant").addClass("battlefield-start-choose_rival-variant__active"),
+                            main_object(this).is(".battlefield-start-choose_rival-variant-link__connect"))) {
+                            var a = main_object(this).closest(".battlefield-start-choose_rival-variant").find(".battlefield-start-choose_rival-variant-url-input");
                             a.val(location.href).attr("data-value", location.href);
                             a.on("click",function () {
-                                b(this).trigger("select")
+                                main_object(this).trigger("select")
                             }).on("keydown keyup", function (a) {
                                 (a.ctrlKey || a.metaKey) && 67 == a.keyCode || a.preventDefault()
                             })
@@ -677,27 +677,27 @@
                     })
                 })();
                 (function () {
-                    var a = H();
+                    var a = add_slash_before_pathname();
                     0 == a.replace(/^\/[a-z]{2}\//, "/").toLowerCase().indexOf("/id") && (a = a.replace(/\/$/,
-                        ""), b(".battlefield-start-ships_types-gap").removeClass("none"), -1 != a.indexOf("/classic") ? (b(".battlefield-start-ships_type__classic").addClass("battlefield-start-ships_type__active"), b(".battlefield-start-ships_type-link").attr("href", a), b(".battlefield-start-ships_type__default .battlefield-start-ships_type-link").attr("href", a.replace(/\/classic\/?/, ""))) : (b(".battlefield-start-ships_type__default").addClass("battlefield-start-ships_type__active"), b(".battlefield-start-ships_type-link").attr("href",
-                        a), b(".battlefield-start-ships_type__classic .battlefield-start-ships_type-link").attr("href", a + "/classic")))
+                        ""), main_object(".battlefield-start-ships_types-gap").removeClass("none"), -1 != a.indexOf("/classic") ? (main_object(".battlefield-start-ships_type__classic").addClass("battlefield-start-ships_type__active"), main_object(".battlefield-start-ships_type-link").attr("href", a), main_object(".battlefield-start-ships_type__default .battlefield-start-ships_type-link").attr("href", a.replace(/\/classic\/?/, ""))) : (main_object(".battlefield-start-ships_type__default").addClass("battlefield-start-ships_type__active"), main_object(".battlefield-start-ships_type-link").attr("href",
+                        a), main_object(".battlefield-start-ships_type__classic .battlefield-start-ships_type-link").attr("href", a + "/classic")))
                 })()
             })();
             (function () {
-                Ya() && b(".setting__sound").removeClass("none");
-                b(".setting").each(function () {
-                    var a = b(this).attr("data-name"), c = "setting__" + a, g = b("#" + c);
-                    b.cookie(c) && g.attr("checked", "on" == b.cookie(c) ? !0 : !1);
+                which_soundfiles_available() && main_object(".setting__sound").removeClass("none");
+                main_object(".setting").each(function () {
+                    var a = main_object(this).attr("data-name"), c = "setting__" + a, g = main_object("#" + c);
+                    main_object.cookie(c) && g.attr("checked", "on" == main_object.cookie(c) ? !0 : !1);
                     g.click(function () {
-                        E[a] = b(this).is(":checked") ? "on" : "off";
-                        b.cookie(c, E[a], {expires: 365, path: "/", domain: "." + u});
+                        E[a] = main_object(this).is(":checked") ? "on" : "off";
+                        main_object.cookie(c, E[a], {expires: 365, path: "/", domain: "." + u});
                         "sound" == a && "on" == E[a] && play_sound("click")
                     });
                     E[a] = g.is(":checked")
                 })
             })();
             (function () {
-                function a(a) {
+                function create_random_ship_positions(a) {
                     create_empty_battlefield();
                     if (a)ea(); else if (a = "ships__" + (X ? "classic" : "default"), "undefined" != typeof localStorage && "undefined" != typeof localStorage[a] && "" != localStorage[a]) {
                         var a = JSON.parse(localStorage[a]), g;
@@ -725,38 +725,41 @@
                         for (f = 0; f < d.length; f++)e = d[f], 0 === f && va(e.y, e.x, a[j].len, a[j].pos, g, a[j].id), g.find("tr:nth-child(" + (e.y + 1) + ") td:nth-child(" + (e.x + 1) + ")").removeClass("battlefield-cell__empty").addClass("battlefield-cell__busy")
                     }
                     Ha();
-                    b(".battlefields").removeClass("battlefields__handly");
-                    b(".battlefield-start").removeClass("none")
+                    main_object(".battlefields").removeClass("battlefields__handly");
+                    main_object(".battlefield-start").removeClass("none")
                 }
 
-                b(".placeships-variant__hands").click(function () {
+                //this is "place ships from clear sheet"
+                main_object(".placeships-variant__hands").click(function () {
                     create_empty_battlefield();
-                    b(".battlefields").addClass("battlefields__handly");
-                    b(".battlefield-start").addClass("none");
-                    var a = b(".port-lines");
+                    main_object(".battlefields").addClass("battlefields__handly");
+                    main_object(".battlefield-start").addClass("none");
+                    var a = main_object(".port-lines");
                     a.html("");
                     for (var g =
                         0; g < s.length; g++) {
-                        for (var d = s[g], e = b('<div class="port-line clearfix" />'), f = 0; f < d.count; f++) {
-                            var h = b('<div class="port-ship" />'), i = ua(d.size, "h", ca());
+                        for (var d = s[g], e = main_object('<div class="port-line clearfix" />'), f = 0; f < d.count; f++) {
+                            var h = main_object('<div class="port-ship" />'), i = ua(d.size, "h", ca());
                             h.attr("style", i.attr("style")).append(i);
                             e.append(h)
                         }
                         a.append(e)
                     }
                     Ha();
-                    b(this).addClass("placeships-variant__hands_inactive")
+                    main_object(this).addClass("placeships-variant__hands_inactive")
                 });
-                b(".placeships-variant__randomly").click(function () {
-                    a(!0);
-                    b(".placeships-variant__hands_inactive").removeClass("placeships-variant__hands_inactive")
+
+                //this is "place ships randomly"
+                main_object(".placeships-variant__randomly").click(function () {
+                    create_random_ship_positions(!0);
+                    main_object(".placeships-variant__hands_inactive").removeClass("placeships-variant__hands_inactive")
                 });
-                a();
-                b(".battlefield-start-button").attr("disabled", null).click(function () {
-                    b(this).attr("disabled",
+                create_random_ship_positions();
+                main_object(".battlefield-start-button").attr("disabled", null).click(function () {
+                    main_object(this).attr("disabled",
                         "disabled");
-                    b(".placeships").addClass("none");
-                    var a = b(".ship-box__draggable");
+                    main_object(".placeships").addClass("none");
+                    var a = main_object(".ship-box__draggable");
                     a.draggable("destroy");
                     a.unbind("click");
                     a.removeClass("ship-box__draggable");
@@ -765,9 +768,9 @@
                 })
             })();
             (function () {
-                var a = b(".chat-teletype");
+                var a = main_object(".chat-teletype");
                 a.bind("keydown", function (a) {
-                    13 == a.keyCode ? (a = b(".chat-teletype").val(), a = b.trim(a), "" != a ? (j.reachGoal("chatMessage"), N = !1, low_level_connection_invoker({command: "chat-message", message: a}, !0, x, y), a = !0) : a = !1, a && b(".chat-teletype").val("")) : N || (N = !0, low_level_connection_invoker({command: "chat-message-typing"}, !0, x, y))
+                    13 == a.keyCode ? (a = main_object(".chat-teletype").val(), a = main_object.trim(a), "" != a ? (j.reachGoal("chatMessage"), N = !1, low_level_connection_invoker({command: "chat-message", message: a}, !0, x, y), a = !0) : a = !1, a && main_object(".chat-teletype").val("")) : N || (N = !0, low_level_connection_invoker({command: "chat-message-typing"}, !0, x, y))
                 });
                 a.bind("keyup blur",
                     function (a) {
@@ -788,17 +791,17 @@
                 l.onfocusout = function (a) {
                     "undefined" == typeof a && null == event.toElement && (L = !1)
                 };
-                b(i).focus(function () {
+                main_object(i).focus(function () {
                     L = !0
                 }).blur(function () {
                     L = !1
                 })
             })();
             (function () {
-                b(".restart").click(function () {
+                main_object(".restart").click(function () {
                     location.reload(!0)
                 });
-                b(".leave-link").attr("href", location.href).on("click",
+                main_object(".leave-link").attr("href", location.href).on("click",
                     function (a) {
                         function b() {
                             location.reload(!0)
@@ -811,26 +814,26 @@
             })()
         })();
         (function () {
-            b(".lang-link").each(function () {
-                var a = b(this).attr("href");
-                if ("https" == na()) {
-                    var a = b(this).attr("href").replace("http://", "").substr(0, 2), c = location.pathname.replace(/^\/[a-z]{2}\//, "/");
-                    b(this).attr("href", "https://" + u + "/" + a + c)
-                } else b(this).attr("href", a.replace(/\/$/, "") + location.pathname)
+            main_object(".lang-link").each(function () {
+                var a = main_object(this).attr("href");
+                if ("https" == protocol_type_http_or_https()) {
+                    var a = main_object(this).attr("href").replace("http://", "").substr(0, 2), c = location.pathname.replace(/^\/[a-z]{2}\//, "/");
+                    main_object(this).attr("href", "https://" + u + "/" + a + c)
+                } else main_object(this).attr("href", a.replace(/\/$/, "") + location.pathname)
             })
         })();
         (function () {
             try {
-                var a = !1, c = b(".sda");
+                var a = !1, c = main_object(".sda");
                 if (c.length) {
                     var g = c.find(".sda-block"), d = c.height(),
                         e = parseInt(g.css("padding-top"), 10), g = function () {
                             c.removeClass("sda__fixed");
                             var f = c.offset().top + d + e;
-                            b(i).height() > f && c.addClass("sda__fixed");
-                            a || (b(".sda__vh").removeClass("sda__vh"), a = !0)
+                            main_object(i).height() > f && c.addClass("sda__fixed");
+                            a || (main_object(".sda__vh").removeClass("sda__vh"), a = !0)
                         };
-                    b(i).resize(g);
+                    main_object(i).resize(g);
                     g()
                 }
             } catch (f) {
@@ -839,45 +842,45 @@
         (function () {
             if (/(ipad|iphone)/i.test(i.navigator.userAgent)) {
                 var a = function () {
-                    var c = b(".sound:not([data-inited])").first();
+                    var c = main_object(".sound:not([data-inited])").first();
                     c.length ? (c.on("canplay", function () {
-                        b(this).attr("data-inited", "yes")
-                    }), c.get(0).play(), c.get(0).pause()) : b(l).off("touchstart", a)
+                        main_object(this).attr("data-inited", "yes")
+                    }), c.get(0).play(), c.get(0).pause()) : main_object(l).off("touchstart", a)
                 };
-                b(l).on("touchstart",
+                main_object(l).on("touchstart",
                     a)
             }
         })();
-        i.chrome && i.chrome.webstore && b(".copyright-link__chrome").removeClass("none");
-        "https:" == i.location.protocol && b(".body").addClass("body__ssl");
+        i.chrome && i.chrome.webstore && main_object(".copyright-link__chrome").removeClass("none");
+        "https:" == i.location.protocol && main_object(".body").addClass("body__ssl");
         (function () {
-            b(".body-iframe a[href^='mailto:']").on("click", function () {
-                i.top.location = b(this).attr("href");
+            main_object(".body-iframe a[href^='mailto:']").on("click", function () {
+                i.top.location = main_object(this).attr("href");
                 return!1
             })
         })();
         (function () {
             function a() {
-                var a = b(".langs__opened");
+                var a = main_object(".langs__opened");
                 a.length && a.removeClass("langs__opened").attr("style", "")
             }
 
-            b(".langs");
-            b(".lang__selected .lang-link").on("click", function (c) {
-                var d = b(c.target);
+            main_object(".langs");
+            main_object(".lang__selected .lang-link").on("click", function (c) {
+                var d = main_object(c.target);
                 c.preventDefault();
                 d.closest(".langs__opened").length ?
-                    a() : (c = b(".langs"), c.is(".langs__opened") || c.addClass("langs__opened"))
+                    a() : (c = main_object(".langs"), c.is(".langs__opened") || c.addClass("langs__opened"))
             });
-            var c = (b("html").attr("data-accept-language") || "").split(",");
+            var c = (main_object("html").attr("data-accept-language") || "").split(",");
             if (c.length && c[0].length)for (var g = 0; g < c.length; g++) {
-                var d = b(".lang__" + c[g]);
+                var d = main_object(".lang__" + c[g]);
                 d.length && d.addClass("lang__priority")
             }
-            b(l).click(function (c) {
-                b(c.target).closest(".langs").length || a()
+            main_object(l).click(function (c) {
+                main_object(c.target).closest(".langs").length || a()
             });
-            b(l).keyup(function (b) {
+            main_object(l).keyup(function (b) {
                 27 == b.keyCode && a()
             })
         })();
@@ -889,23 +892,23 @@
 
             function c(c) {
                 var e = 3650;
-                "cancel" == c && (e = a(b.cookie("review-cancel-count")) +
-                    1, b.cookie("review-cancel-count", e, {expires: 3650, path: "/", domain: "." + u}), e *= 7);
-                b.cookie("review", c, {expires: e, path: "/", domain: "." + u})
+                "cancel" == c && (e = a(main_object.cookie("review-cancel-count")) +
+                    1, main_object.cookie("review-cancel-count", e, {expires: 3650, path: "/", domain: "." + u}), e *= 7);
+                main_object.cookie("review", c, {expires: e, path: "/", domain: "." + u})
             }
 
-            var g = a(b.cookie("visit"));
-            b.cookie("visit", g + 1, {expires: 3650, path: "/", domain: "." + u});
-            i.chrome && i.chrome.webstore && !b(".body-iframe").length && 50 < a(b.cookie("visit")) && "undefined" == typeof b.cookie("review") && (b(".notification__cws .notification-submit__accept").click(function () {
+            var g = a(main_object.cookie("visit"));
+            main_object.cookie("visit", g + 1, {expires: 3650, path: "/", domain: "." + u});
+            i.chrome && i.chrome.webstore && !main_object(".body-iframe").length && 50 < a(main_object.cookie("visit")) && "undefined" == typeof main_object.cookie("review") && (main_object(".notification__cws .notification-submit__accept").click(function () {
                 c("accept");
-                var a = b(this).attr("data-target");
+                var a = main_object(this).attr("data-target");
                 location.href = a
-            }), b(".notification__cws .notification-submit__cancel").click(function () {
+            }), main_object(".notification__cws .notification-submit__cancel").click(function () {
                 c("cancel");
-                b(".body").removeClass("body__game_over");
-                b(".notification__init").removeClass("none");
-                b(".notification__cws").addClass("none")
-            }), b(".body").addClass("body__game_over"), b(".notification__init").addClass("none"), b(".notification__cws").removeClass("none"))
+                main_object(".body").removeClass("body__game_over");
+                main_object(".notification__init").removeClass("none");
+                main_object(".notification__cws").addClass("none")
+            }), main_object(".body").addClass("body__game_over"), main_object(".notification__init").addClass("none"), main_object(".notification__cws").removeClass("none"))
         })()
     })
 })(window, document);
