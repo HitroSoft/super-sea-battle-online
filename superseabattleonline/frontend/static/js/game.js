@@ -540,7 +540,7 @@
             }
         }
 
-        function Ha() {
+        function placing_ships_manually_on_own_field() {
             function a(a) {
                 var b = a.closest(".battlefield-cell-content");
                 if (b.length) {
@@ -646,6 +646,7 @@
             return this
         };
         (function () {
+            //adding localization cookie
             2 == function_which_returns_localization_value.length && main_object.cookie("lang", function_which_returns_localization_value, {expires: 365, path: "/", domain: "." + u});
             (function () {
                 (function () {
@@ -656,6 +657,7 @@
                         a + "/");
                     var g = main_object(".battlefield-start-choose_rival-variant-link__connect");
                     g.attr("href");
+                    //if we entered via id link - play with this id. Otherwise play with same language player
                     0 === c.toLowerCase().indexOf("/id") ? g.attr("href", a + c) : g.attr("href", a + "/id" + T(1E7, 99999999))
                 })();
                 main_object(".battlefield-start-choose_rival-variant-link").click(function () {
@@ -683,6 +685,7 @@
                         a), main_object(".battlefield-start-ships_type__classic .battlefield-start-ships_type-link").attr("href", a + "/classic")))
                 })()
             })();
+            //if sound-on clicked - store value and make clicksound
             (function () {
                 which_soundfiles_available() && main_object(".setting__sound").removeClass("none");
                 main_object(".setting").each(function () {
@@ -724,7 +727,7 @@
                         d = a[j].coords;
                         for (f = 0; f < d.length; f++)e = d[f], 0 === f && va(e.y, e.x, a[j].len, a[j].pos, g, a[j].id), g.find("tr:nth-child(" + (e.y + 1) + ") td:nth-child(" + (e.x + 1) + ")").removeClass("battlefield-cell__empty").addClass("battlefield-cell__busy")
                     }
-                    Ha();
+                    placing_ships_manually_on_own_field();
                     main_object(".battlefields").removeClass("battlefields__handly");
                     main_object(".battlefield-start").removeClass("none")
                 }
@@ -745,7 +748,7 @@
                         }
                         a.append(e)
                     }
-                    Ha();
+                    placing_ships_manually_on_own_field();
                     main_object(this).addClass("placeships-variant__hands_inactive")
                 });
 
