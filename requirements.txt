@@ -1,0 +1,7 @@
+#seabattle
+#pip install -r requirements.pip
+Django>=1.6
+django-requestlogging>=1.0.1
+boto>=2.25
+djangorestframework==2.3.12
+requests==2.2.1
