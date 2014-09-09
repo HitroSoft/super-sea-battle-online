@@ -118,8 +118,8 @@ class DinamoDbTable(object):
 
         return resp
 
-    @staticmethod
-    def to_native(data):
+
+    def to_native(self, data):
         return data
 
     def get_pk_name(self):

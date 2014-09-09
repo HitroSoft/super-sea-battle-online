@@ -18,6 +18,4 @@ class MyTable(DinamoDbTable):
                              connection=self.get_connection())
         return table
 
-
-
-
+  
