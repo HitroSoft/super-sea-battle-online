@@ -60,3 +60,12 @@ if some_variable == None:
 else:
     print ("some_variable is NOT None !")
 
+try:
+    print some_variable['ssss']
+    if some_variable=='ssss':
+        print 'sss'
+
+except Exception as e:
+    print e
+
+
