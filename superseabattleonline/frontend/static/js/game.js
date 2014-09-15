@@ -13,7 +13,7 @@
         return b
     }
 
-    function add_slash_before_pathname() {
+    function get_pathname_with_leading_slash() {
         var b = i.location.pathname;
         0 != b.indexOf("/") && (b = "/" + b);
         //b  = "/D:/index.html";
@@ -34,7 +34,7 @@
 
     var u = "battleship-game.org", La = get_site_localization_from_domain_name(), function_which_returns_localization_value = function () {
         var b = get_site_localization_from_domain_name(), localization_value = document_obj.documentElement.getAttribute("lang");
-        2 == b.length ? localization_value = b : "https:" == i.location.protocol && (b = add_slash_before_pathname().split("/"), 2 <= b.length &&
+        2 == b.length ? localization_value = b : "https:" == i.location.protocol && (b = get_pathname_with_leading_slash().split("/"), 2 <= b.length &&
             2 == b[1].length && (localization_value = b[1]));
         //localization_value = 'ru';
         return localization_value
@@ -190,7 +190,7 @@
             ya(a);
             "off" == main_object.cookie("websocket") && (A = !1, j.reachGoal("websocketOff"));
             A && j.reachGoal("supportWebSocket");
-            var c = add_slash_before_pathname().replace(/^\/[a-z]{2}\//, "/"), c = 0 === c.toLowerCase().indexOf("/id") ? c.substr(3) : "";
+            var c = get_pathname_with_leading_slash().replace(/^\/[a-z]{2}\//, "/"), c = 0 === c.toLowerCase().indexOf("/id") ? c.substr(3) : "";
             low_level_connection_invoker({command: "create", connect: c, ships: a, type: X ? "classic" : "default"}, !0, function (a) {
                 J = a.id;
                 xa(J);
@@ -652,7 +652,7 @@
                 (function () {
                     var a = "";
                     "https" == protocol_type_http_or_https() && (a = "/" + function_which_returns_localization_value);
-                    var c = add_slash_before_pathname().replace(/^\/[a-z]{2}\//, "/");
+                    var c = get_pathname_with_leading_slash().replace(/^\/[a-z]{2}\//, "/");
                     main_object(".battlefield-start-choose_rival-variant-link").attr("href",
                         a + "/");
                     var g = main_object(".battlefield-start-choose_rival-variant-link__connect");
@@ -666,7 +666,7 @@
                 (function () {
                     main_object(".battlefield-start-choose_rival-variant").removeClass("battlefield-start-choose_rival-variant__active");
                     main_object(".battlefield-start-choose_rival-variant-link").each(function () {
-                        if (main_object(this).attr("href") == add_slash_before_pathname() && (main_object(this).closest(".battlefield-start-choose_rival-variant").addClass("battlefield-start-choose_rival-variant__active"),
+                        if (main_object(this).attr("href") == get_pathname_with_leading_slash() && (main_object(this).closest(".battlefield-start-choose_rival-variant").addClass("battlefield-start-choose_rival-variant__active"),
                             main_object(this).is(".battlefield-start-choose_rival-variant-link__connect"))) {
                             var a = main_object(this).closest(".battlefield-start-choose_rival-variant").find(".battlefield-start-choose_rival-variant-url-input");
                             a.val(location.href).attr("data-value", location.href);
@@ -679,7 +679,7 @@
                     })
                 })();
                 (function () {
-                    var a = add_slash_before_pathname();
+                    var a = get_pathname_with_leading_slash();
                     0 == a.replace(/^\/[a-z]{2}\//, "/").toLowerCase().indexOf("/id") && (a = a.replace(/\/$/,
                         ""), main_object(".battlefield-start-ships_types-gap").removeClass("none"), -1 != a.indexOf("/classic") ? (main_object(".battlefield-start-ships_type__classic").addClass("battlefield-start-ships_type__active"), main_object(".battlefield-start-ships_type-link").attr("href", a), main_object(".battlefield-start-ships_type__default .battlefield-start-ships_type-link").attr("href", a.replace(/\/classic\/?/, ""))) : (main_object(".battlefield-start-ships_type__default").addClass("battlefield-start-ships_type__active"), main_object(".battlefield-start-ships_type-link").attr("href",
                         a), main_object(".battlefield-start-ships_type__classic .battlefield-start-ships_type-link").attr("href", a + "/classic")))
@@ -732,7 +732,7 @@
                     main_object(".battlefield-start").removeClass("none")
                 }
 
-                //this is "place ships from clear sheet"
+                //this is "place ships from clear sheet" ONCLICK EVENT
                 main_object(".placeships-variant__hands").click(function () {
                     create_empty_battlefield();
                     main_object(".battlefields").addClass("battlefields__handly");
@@ -752,12 +752,15 @@
                     main_object(this).addClass("placeships-variant__hands_inactive")
                 });
 
-                //this is "place ships randomly"
+                //this is "place ships randomly" ONCLICK EVENT
                 main_object(".placeships-variant__randomly").click(function () {
                     create_random_ship_positions(!0);
                     main_object(".placeships-variant__hands_inactive").removeClass("placeships-variant__hands_inactive")
                 });
+
                 create_random_ship_positions();
+
+                //this is start button ONCLICK EVENT
                 main_object(".battlefield-start-button").attr("disabled", null).click(function () {
                     main_object(this).attr("disabled",
                         "disabled");
