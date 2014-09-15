@@ -4,7 +4,7 @@
     }, log: function () {
     }}
 })(window);
-(function (i, l, Ja) {
+(function (i, document_obj, Ja) {
     function get_site_localization_from_domain_name() {
         var b = "", j = i.location.host.split(".");
         2 < j.length && (b = j[0]);
@@ -33,7 +33,7 @@
     }
 
     var u = "battleship-game.org", La = get_site_localization_from_domain_name(), function_which_returns_localization_value = function () {
-        var b = get_site_localization_from_domain_name(), localization_value = l.documentElement.getAttribute("lang");
+        var b = get_site_localization_from_domain_name(), localization_value = document_obj.documentElement.getAttribute("lang");
         2 == b.length ? localization_value = b : "https:" == i.location.protocol && (b = add_slash_before_pathname().split("/"), 2 <= b.length &&
             2 == b[1].length && (localization_value = b[1]));
         //localization_value = 'ru';
@@ -318,16 +318,16 @@
 
         function Xa() {
             function a() {
-                l.title = K.replace(/\s/g, "\u00a0");
+                document_obj.title = K.replace(/\s/g, "\u00a0");
                 setTimeout(function () {
-                    l.title = K
+                    document_obj.title = K
                 }, 250)
             }
 
             (function g() {
                 clearTimeout(Fa);
                 if (L)a(); else {
-                    if (ja)l.title = l.title ==
+                    if (ja)document_obj.title = document_obj.title ==
                         K ? "..." : K;
                     Fa = setTimeout(g, 1E3)
                 }
@@ -787,11 +787,11 @@
                     })
             })();
             (function () {
-                K = l.title;
-                l.onfocusin = function (a) {
+                K = document_obj.title;
+                document_obj.onfocusin = function (a) {
                     "undefined" == typeof a && null == event.toElement && (L = !0)
                 };
-                l.onfocusout = function (a) {
+                document_obj.onfocusout = function (a) {
                     "undefined" == typeof a && null == event.toElement && (L = !1)
                 };
                 main_object(i).focus(function () {
@@ -848,9 +848,9 @@
                     var c = main_object(".sound:not([data-inited])").first();
                     c.length ? (c.on("canplay", function () {
                         main_object(this).attr("data-inited", "yes")
-                    }), c.get(0).play(), c.get(0).pause()) : main_object(l).off("touchstart", a)
+                    }), c.get(0).play(), c.get(0).pause()) : main_object(document_obj).off("touchstart", a)
                 };
-                main_object(l).on("touchstart",
+                main_object(document_obj).on("touchstart",
                     a)
             }
         })();
@@ -880,10 +880,10 @@
                 var d = main_object(".lang__" + c[g]);
                 d.length && d.addClass("lang__priority")
             }
-            main_object(l).click(function (c) {
+            main_object(document_obj).click(function (c) {
                 main_object(c.target).closest(".langs").length || a()
             });
-            main_object(l).keyup(function (b) {
+            main_object(document_obj).keyup(function (b) {
                 27 == b.keyCode && a()
             })
         })();
