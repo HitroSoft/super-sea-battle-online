@@ -4,9 +4,9 @@
     }, log: function () {
     }}
 })(window);
-(function (i, document_obj, Ja) {
+(function (window_obj, document_obj, Ja) {
     function get_site_localization_from_domain_name() {
-        var b = "", j = i.location.host.split(".");
+        var b = "", j = window_obj.location.host.split(".");
         2 < j.length && (b = j[0]);
         //b = "battleship-game.org"
         //b = "";
@@ -14,7 +14,7 @@
     }
 
     function get_pathname_with_leading_slash() {
-        var b = i.location.pathname;
+        var b = window_obj.location.pathname;
         0 != b.indexOf("/") && (b = "/" + b);
         //b  = "/D:/index.html";
         return b
@@ -22,25 +22,25 @@
 
     function protocol_type_http_or_https() {
         var b = "http";
-        "https:" == i.location.protocol && (b += "s");
+        "https:" == window_obj.location.protocol && (b += "s");
         return b
     }
 
     function protocol_type_ws_or_wss_if_https() {
         var b = "ws";
-        "https:" == i.location.protocol && (b += "s");
+        "https:" == window_obj.location.protocol && (b += "s");
         return b
     }
 
     var u = "battleship-game.org", variable_with_localization_from_domain_name = get_site_localization_from_domain_name(), function_which_returns_localization_value = function () {
         var b = get_site_localization_from_domain_name(), localization_value = document_obj.documentElement.getAttribute("lang");
-        2 == b.length ? localization_value = b : "https:" == i.location.protocol && (b = get_pathname_with_leading_slash().split("/"), 2 <= b.length &&
+        2 == b.length ? localization_value = b : "https:" == window_obj.location.protocol && (b = get_pathname_with_leading_slash().split("/"), 2 <= b.length &&
             2 == b[1].length && (localization_value = b[1]));
         //localization_value = 'ru';
         return localization_value
-    }(), Ma = "/services/";
-    if (i.MozWebSocket)i.WebSocket = i.MozWebSocket;
-    var A = !!("WebSocket"in i && 2 == WebSocket.CLOSING), some_reach_goal_var_or_function = {reachGoal: function (b, i) {
+    }(), path_for_post_to_service = "/services/";
+    if (window_obj.MozWebSocket)window_obj.WebSocket = window_obj.MozWebSocket;
+    var web_sockets_available_for_usage = !!("WebSocket"in window_obj && 2 == WebSocket.CLOSING), some_reach_goal_var_or_function = {reachGoal: function (b, i) {
         try {
             yaCounter20587900.reachGoal(b, i)
         } catch (j) {
@@ -144,7 +144,7 @@
 
         function xa(a) {
             var c = RegExp("^" + U + "[a-zA-Z0-9]{12}$"), b = /^[a-zA-Z0-9]{12}$/, d = "", a = a || "", d = a.match(c) ? a : a.match(b) ? U + a : U + ca();
-            return i.name = d
+            return window_obj.name = d
         }
 
         function ga() {
@@ -188,8 +188,8 @@
             rival_battlefield_some_variable.find(".battlefield-cell-content").bind("click", ga);
             var a = convert_ships_object_list_to_array_of_ships_each_as_array_of_cells(r);
             ya(a);
-            "off" == main_object.cookie("websocket") && (A = !1, some_reach_goal_var_or_function.reachGoal("websocketOff"));
-            A && some_reach_goal_var_or_function.reachGoal("supportWebSocket");
+            "off" == main_object.cookie("websocket") && (web_sockets_available_for_usage = !1, some_reach_goal_var_or_function.reachGoal("websocketOff"));
+            web_sockets_available_for_usage && some_reach_goal_var_or_function.reachGoal("supportWebSocket");
             var c = get_pathname_with_leading_slash().replace(/^\/[a-z]{2}\//, "/"), c = 0 === c.toLowerCase().indexOf("/id") ? c.substr(3) : "";
             low_level_connection_invoker({command: "create", connect: c, ships: a, type: X ? "classic" : "default"}, !0, function (a) {
                 J = a.id;
@@ -227,47 +227,48 @@
 
         function low_level_connection_invoker(a, c, g, d) {
             if (!t) {
-                var e = xa(i.name).substr(U.length);
+                var unknown_user_name_or_id = xa(window_obj.name).substr(U.length);
                 F = {obj: a, async: c, callback: g, fallback: d};
                 var f = JSON.stringify(a);
-                if (A) {
+                //web_sockets_available_for_usage = false; //uncomment this line to force JS connect to targetip/services/ where we can catch requests
+                if (web_sockets_available_for_usage) {
                     a = protocol_type_ws_or_wss_if_https();
                     c = u;
                     "ws" == a && (c = (variable_with_localization_from_domain_name || function_which_returns_localization_value) + "." + c);
-                    e = a + "://" + c + "/ws/" + e;
+                    var e = a + "://" + c + "/ws/" + unknown_user_name_or_id;
                     //e = "ws://battleship-game.org.battleship-game.org/ws/ucCsIoZYqz9d";
-                    if (h &&
-                        h.socket && h.socket.readyState === WebSocket.OPEN) {
-                        if (h.socket.url === e) {
-                            h.ajax.callback = g;
-                            h.ajax.fallback = d;
-                            h.socket.send(f);
+                    if (socket_object &&
+                        socket_object.socket && socket_object.socket.readyState === WebSocket.OPEN) {
+                        if (socket_object.socket.url === e) {
+                            socket_object.ajax.callback = g;
+                            socket_object.ajax.fallback = d;
+                            socket_object.socket.send(f);
                             return
                         }
                         try {
-                            h.socket.onclose = null, h.socket.onerror = null, h.socket && h.socket.readyState === WebSocket.OPEN && h.socket.close()
+                            socket_object.socket.onclose = null, socket_object.socket.onerror = null, socket_object.socket && socket_object.socket.readyState === WebSocket.OPEN && socket_object.socket.close()
                         } catch (k) {
                         }
                     }
-                    h = {ajax: new ia(g, d), socket: new WebSocket(e)};
-                    h.socket.onopen = function () {
-                        h.socket.send(f)
+                    socket_object = {ajax: new ia(g, d), socket: new WebSocket(e)};
+                    socket_object.socket.onopen = function () {
+                        socket_object.socket.send(f)
                     };
-                    h.socket.onclose = function (a) {
-                        "undefined" != typeof a.code && 1E3 != a.code && ("undefined" != typeof navigator.onLine && !navigator.onLine ? this.ajax.fallback.call(i, {status: 0}) :
-                            (this.ajax.fallback.call(i, {status: 502}), Ca++, Ca >= Ua && (A = !1, main_object.cookie("websocket", "off", {expires: 7, path: "/", domain: "." + u}), some_reach_goal_var_or_function.reachGoal("fromWebSocketToLongPolling")), some_reach_goal_var_or_function.reachGoal("webSocketClose", {code: "" + a.code})))
-                    }.bind(h);
-                    h.socket.onerror = function () {
-                        h.socket && h.socket.readyState && h.socket.readyState === WebSocket.OPEN && h.socket.close();
+                    socket_object.socket.onclose = function (a) {
+                        "undefined" != typeof a.code && 1E3 != a.code && ("undefined" != typeof navigator.onLine && !navigator.onLine ? this.ajax.fallback.call(window_obj, {status: 0}) :
+                            (this.ajax.fallback.call(window_obj, {status: 502}), Ca++, Ca >= Ua && (web_sockets_available_for_usage = !1, main_object.cookie("websocket", "off", {expires: 7, path: "/", domain: "." + u}), some_reach_goal_var_or_function.reachGoal("fromWebSocketToLongPolling")), some_reach_goal_var_or_function.reachGoal("webSocketClose", {code: "" + a.code})))
+                    }.bind(socket_object);
+                    socket_object.socket.onerror = function () {
+                        socket_object.socket && socket_object.socket.readyState && socket_object.socket.readyState === WebSocket.OPEN && socket_object.socket.close();
                         some_reach_goal_var_or_function.reachGoal("webSocketError")
-                    }.bind(h);
-                    h.socket.onmessage = function (a) {
+                    }.bind(socket_object);
+                    socket_object.socket.onmessage = function (a) {
                         a = JSON.parse(a.data);
                         za();
-                        200 != a.status ? this.ajax.fallback.call(i, a) : this.ajax.callback.call(i,
+                        200 != a.status ? this.ajax.fallback.call(window_obj, a) : this.ajax.callback.call(window_obj,
                             a)
-                    }.bind(h)
-                } else c = "undefined" == typeof c || c ? !0 : !1, h && 4 != h.readyState && h.abort && h.abort(), h = main_object.ajax({cache: !1, type: "post", dataType: "json", contentType: "application/json", url: Ma + e, data: f, async: c, error: d, success: g})
+                    }.bind(socket_object)
+                } else c = "undefined" == typeof c || c ? !0 : !1, socket_object && 4 != socket_object.readyState && socket_object.abort && socket_object.abort(), socket_object = main_object.ajax({cache: !1, type: "post", dataType: "json", contentType: "application/json", url: path_for_post_to_service + unknown_user_name_or_id, data: f, async: c, error: d, success: g})
             }
         }
 
@@ -291,8 +292,8 @@
             if (!t)switch (responce_var.status) {
                 case 0:
                     setTimeout(function () {
-                        if (!A &&
-                            0 === h.readyState || A && h.socket && h.socket.readyState == h.socket.CLOSED)some_reach_goal_var_or_function.reachGoal("reconnect"), make_some_call()
+                        if (!web_sockets_available_for_usage &&
+                            0 === socket_object.readyState || web_sockets_available_for_usage && socket_object.socket && socket_object.socket.readyState == socket_object.socket.CLOSED)some_reach_goal_var_or_function.reachGoal("reconnect"), make_some_call()
                     }, 1E3);
                     break;
                 case 501:
@@ -360,7 +361,7 @@
                             game_event_payload.owner && (ha(!0), play_sound("chat"));
                         var d = main_object(".chat-message__holder"), e = ("" + new Date(game_event_payload.date)).match(/\d\d:\d\d:\d\d/);
                         main_object('<li class="chat-message chat-message__' + game_event_payload.owner + '"><span class="chat-message-time">' + e + '</span> <span class="chat-message-text">' + main_object("<div />").text(game_event_payload.message).html() + "</span></li>").insertAfter(d);
-                        main_object(i).trigger("resize");
+                        main_object(window_obj).trigger("resize");
                         break;
                     case "game-started-move-off":
                     case "game-started-move-on":
@@ -486,26 +487,26 @@
                 var c, g,
                     d = main_object(".sound__" + a);
                 c = "game_started" == a || "chat" == a ? d : g = d.clone();
-                /(ipad|iphone)/i.test(i.navigator.userAgent) ? d.get(0).play() : c.get(0).play()
+                /(ipad|iphone)/i.test(window_obj.navigator.userAgent) ? d.get(0).play() : c.get(0).play()
             } catch (e) {
             }
         }
 
         function Sa() {
-            main_object(i).bind("beforeunload", function () {
+            main_object(window_obj).bind("beforeunload", function () {
                 if (J && !t)if ($)low_level_connection_invoker({command: "leave"}, !1); else return main_object(".leave").attr("data-confirm")
             });
-            main_object(i).unload(function () {
+            main_object(window_obj).unload(function () {
                 J && (ja ? t || (low_level_connection_invoker({command: "leave"}, !1), some_reach_goal_var_or_function.reachGoal("leaveWhilePlaying", {exit: $ ? "click" : "close"})) : some_reach_goal_var_or_function.reachGoal("leaveWithoutPlaying", {exit: $ ? "click" : "close"}))
             })
         }
 
         function Ta() {
-            main_object(i).bind("online", function () {
+            main_object(window_obj).bind("online", function () {
                 some_reach_goal_var_or_function.reachGoal("online");
                 main_object(".body").removeClass("body__offline")
             });
-            main_object(i).bind("offline", function () {
+            main_object(window_obj).bind("offline", function () {
                 main_object(".body").addClass("body__offline")
             })
         }
@@ -599,7 +600,7 @@
             this.fallback = b
         }
 
-        var U = "battleship__", E = {}, h, F, http_call_attempt_num = 0, http_call_attempt_max = 10, timeout_id, Ca = 0, Ua = 5, J, ka = {}, Aa, N = !1, Ia, L =
+        var U = "battleship__", E = {}, socket_object, F, http_call_attempt_num = 0, http_call_attempt_max = 10, timeout_id, Ca = 0, Ua = 5, J, ka = {}, Aa, N = !1, Ia, L =
             !0, Fa, document_title_var, ja = !1, t = !1, $ = !1, whole_battlefield_some_variable = main_object(".battlefield"), own_battlefield_some_variable = whole_battlefield_some_variable.filter(".battlefield__self"), rival_battlefield_some_variable = whole_battlefield_some_variable.filter(".battlefield__rival");
         Q = 10;
         R = 10;
@@ -636,7 +637,7 @@
             [1, -1],
             [-1,
                 -1]
-        ], Na = i.letters || "\u0410,\u0411,\u0412,\u0413,\u0414,\u0415,\u0416,\u0417,\u0418,\u041a".split(","), ba = [], w = [], r = [], B = [], Ga = 0;
+        ], Na = window_obj.letters || "\u0410,\u0411,\u0412,\u0413,\u0414,\u0415,\u0416,\u0417,\u0418,\u041a".split(","), ba = [], w = [], r = [], B = [], Ga = 0;
         ia.prototype.done = function (a) {
             this.callback = a || function () {
             };
@@ -799,7 +800,7 @@
                 document_obj.onfocusout = function (a) {
                     "undefined" == typeof a && null == event.toElement && (L = !1)
                 };
-                main_object(i).focus(function () {
+                main_object(window_obj).focus(function () {
                     L = !0
                 }).blur(function () {
                     L = !1
@@ -840,17 +841,17 @@
                         e = parseInt(g.css("padding-top"), 10), g = function () {
                             c.removeClass("sda__fixed");
                             var f = c.offset().top + d + e;
-                            main_object(i).height() > f && c.addClass("sda__fixed");
+                            main_object(window_obj).height() > f && c.addClass("sda__fixed");
                             a || (main_object(".sda__vh").removeClass("sda__vh"), a = !0)
                         };
-                    main_object(i).resize(g);
+                    main_object(window_obj).resize(g);
                     g()
                 }
             } catch (f) {
             }
         })();
         (function () {
-            if (/(ipad|iphone)/i.test(i.navigator.userAgent)) {
+            if (/(ipad|iphone)/i.test(window_obj.navigator.userAgent)) {
                 var a = function () {
                     var c = main_object(".sound:not([data-inited])").first();
                     c.length ? (c.on("canplay", function () {
@@ -862,11 +863,11 @@
             }
         })();
         //enabling link for Chrome
-        i.chrome && i.chrome.webstore && main_object(".copyright-link__chrome").removeClass("none");
-        "https:" == i.location.protocol && main_object(".body").addClass("body__ssl");
+        window_obj.chrome && window_obj.chrome.webstore && main_object(".copyright-link__chrome").removeClass("none");
+        "https:" == window_obj.location.protocol && main_object(".body").addClass("body__ssl");
         (function () {
             main_object(".body-iframe a[href^='mailto:']").on("click", function () {
-                i.top.location = main_object(this).attr("href");
+                window_obj.top.location = main_object(this).attr("href");
                 return!1
             })
         })();
@@ -910,7 +911,7 @@
 
             var g = a(main_object.cookie("visit"));
             main_object.cookie("visit", g + 1, {expires: 3650, path: "/", domain: "." + u});
-            i.chrome && i.chrome.webstore && !main_object(".body-iframe").length && 50 < a(main_object.cookie("visit")) && "undefined" == typeof main_object.cookie("review") && (main_object(".notification__cws .notification-submit__accept").click(function () {
+            window_obj.chrome && window_obj.chrome.webstore && !main_object(".body-iframe").length && 50 < a(main_object.cookie("visit")) && "undefined" == typeof main_object.cookie("review") && (main_object(".notification__cws .notification-submit__accept").click(function () {
                 c("accept");
                 var a = main_object(this).attr("data-target");
                 location.href = a
