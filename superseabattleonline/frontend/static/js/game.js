@@ -40,7 +40,7 @@
         return localization_value
     }(), Ma = "/services/";
     if (i.MozWebSocket)i.WebSocket = i.MozWebSocket;
-    var A = !!("WebSocket"in i && 2 == WebSocket.CLOSING), j = {reachGoal: function (b, i) {
+    var A = !!("WebSocket"in i && 2 == WebSocket.CLOSING), some_reach_goal_var_or_function = {reachGoal: function (b, i) {
         try {
             yaCounter20587900.reachGoal(b, i)
         } catch (j) {
@@ -52,7 +52,7 @@
         function create_empty_battlefield() {
             var a, c = [], g = [];
             r = [];
-            S.find(".battlefield-table-placeholder").html("");
+            whole_battlefield_some_variable.find(".battlefield-table-placeholder").html("");
             for (var d = 0; d < Q; d++, g = []) {
                 B[d] = [];
                 ba[d] = [];
@@ -62,7 +62,7 @@
                 c.push('<tr class="battlefield-row">' + g.join("") + "</tr>")
             }
             a = main_object('<table class="battlefield-table">' + c.join("") + "</table>");
-            S.find(".battlefield-table-placeholder").append(a)
+            whole_battlefield_some_variable.find(".battlefield-table-placeholder").append(a)
         }
 
         function qa(a) {
@@ -130,16 +130,16 @@
             return b
         }
 
-        function wa(a) {
-            var c, b, d = [], e;
-            for (e in a) {
-                c = a[e];
+        function convert_ships_object_list_to_array_of_ships_each_as_array_of_cells(ship_list) {
+            var c, b, array_of_ships_each_as_array_of_cells = [], e;
+            for (e in ship_list) {
+                c = ship_list[e];
                 b = c.coords;
                 c = [];
                 for (var f = 0; f < b.length; f++)c.push({y: b[f].y, x: b[f].x});
-                d.push(c)
+                array_of_ships_each_as_array_of_cells.push(c)
             }
-            return d
+            return array_of_ships_each_as_array_of_cells
         }
 
         function xa(a) {
@@ -149,16 +149,16 @@
 
         function ga() {
             var a = main_object(this), c = a.attr("data-x"), g = a.attr("data-y");
-            p.hasClass("battlefield__processed") || Pa(g, c, a)
+            rival_battlefield_some_variable.hasClass("battlefield__processed") || Pa(g, c, a)
         }
 
         function Qa(a) {
-            p.hasClass("battlefield__processed") || (p.addClass("battlefield__processed"), a.closest(".battlefield-cell").addClass("battlefield-cell__processed"))
+            rival_battlefield_some_variable.hasClass("battlefield__processed") || (rival_battlefield_some_variable.addClass("battlefield__processed"), a.closest(".battlefield-cell").addClass("battlefield-cell__processed"))
         }
 
         function V() {
-            p.removeClass("battlefield__processed");
-            p.find(".battlefield-cell__processed").removeClass("battlefield-cell__processed")
+            rival_battlefield_some_variable.removeClass("battlefield__processed");
+            rival_battlefield_some_variable.find(".battlefield-cell__processed").removeClass("battlefield-cell__processed")
         }
 
         function Pa(a, c, b) {
@@ -179,17 +179,17 @@
             a ? c.addClass("chat-state__invisible") : c.removeClass("chat-state__invisible")
         }
 
-        function W() {
+        function add_to_body_class_game_over() {
             t = !0;
             main_object(".body").addClass("body__game_over")
         }
 
         function send_data_with_ships() {
-            p.find(".battlefield-cell-content").bind("click", ga);
-            var a = wa(r);
+            rival_battlefield_some_variable.find(".battlefield-cell-content").bind("click", ga);
+            var a = convert_ships_object_list_to_array_of_ships_each_as_array_of_cells(r);
             ya(a);
-            "off" == main_object.cookie("websocket") && (A = !1, j.reachGoal("websocketOff"));
-            A && j.reachGoal("supportWebSocket");
+            "off" == main_object.cookie("websocket") && (A = !1, some_reach_goal_var_or_function.reachGoal("websocketOff"));
+            A && some_reach_goal_var_or_function.reachGoal("supportWebSocket");
             var c = get_pathname_with_leading_slash().replace(/^\/[a-z]{2}\//, "/"), c = 0 === c.toLowerCase().indexOf("/id") ? c.substr(3) : "";
             low_level_connection_invoker({command: "create", connect: c, ships: a, type: X ? "classic" : "default"}, !0, function (a) {
                 J = a.id;
@@ -201,7 +201,7 @@
         }
 
         function ya(a) {
-            a = a || wa(r);
+            a = a || convert_ships_object_list_to_array_of_ships_each_as_array_of_cells(r);
             if ("undefined" != typeof localStorage)try {
                 localStorage["ships__" +
                     (X ? "classic" : "default")] = JSON.stringify(a)
@@ -255,11 +255,11 @@
                     };
                     h.socket.onclose = function (a) {
                         "undefined" != typeof a.code && 1E3 != a.code && ("undefined" != typeof navigator.onLine && !navigator.onLine ? this.ajax.fallback.call(i, {status: 0}) :
-                            (this.ajax.fallback.call(i, {status: 502}), Ca++, Ca >= Ua && (A = !1, main_object.cookie("websocket", "off", {expires: 7, path: "/", domain: "." + u}), j.reachGoal("fromWebSocketToLongPolling")), j.reachGoal("webSocketClose", {code: "" + a.code})))
+                            (this.ajax.fallback.call(i, {status: 502}), Ca++, Ca >= Ua && (A = !1, main_object.cookie("websocket", "off", {expires: 7, path: "/", domain: "." + u}), some_reach_goal_var_or_function.reachGoal("fromWebSocketToLongPolling")), some_reach_goal_var_or_function.reachGoal("webSocketClose", {code: "" + a.code})))
                     }.bind(h);
                     h.socket.onerror = function () {
                         h.socket && h.socket.readyState && h.socket.readyState === WebSocket.OPEN && h.socket.close();
-                        j.reachGoal("webSocketError")
+                        some_reach_goal_var_or_function.reachGoal("webSocketError")
                     }.bind(h);
                     h.socket.onmessage = function (a) {
                         a = JSON.parse(a.data);
@@ -275,7 +275,7 @@
             var c = !1;
             a.events && (a.events.sort(function (a, c) {
                 return a.id - c.id
-            }), a = a.events.shift(), Va(a), waiting_for_event_http_call(a), c = !0);
+            }), a = a.events.shift(), game_event_handler(a), waiting_for_event_http_call(a), c = !0);
             c || waiting_for_event_http_call()
         }
 
@@ -292,20 +292,20 @@
                 case 0:
                     setTimeout(function () {
                         if (!A &&
-                            0 === h.readyState || A && h.socket && h.socket.readyState == h.socket.CLOSED)j.reachGoal("reconnect"), make_some_call()
+                            0 === h.readyState || A && h.socket && h.socket.readyState == h.socket.CLOSED)some_reach_goal_var_or_function.reachGoal("reconnect"), make_some_call()
                     }, 1E3);
                     break;
                 case 501:
-                    j.reachGoal("gameError");
+                    some_reach_goal_var_or_function.reachGoal("gameError");
                     make_notification("game-error");
-                    W();
+                    add_to_body_class_game_over();
                     break;
                 case 502:
                     clearTimeout(timeout_id);
                     http_call_attempt_num < http_call_attempt_max ? timeout_id = setTimeout(function () {
                         http_call_attempt_num++;
                         make_some_call()
-                    }, 500) : (j.reachGoal("serverError"), make_notification("server-error"), W());
+                    }, 500) : (some_reach_goal_var_or_function.reachGoal("serverError"), make_notification("server-error"), add_to_body_class_game_over());
                     break;
                 case 408:
                 case 504:
@@ -318,9 +318,9 @@
 
         function Xa() {
             function a() {
-                document_obj.title = K.replace(/\s/g, "\u00a0");
+                document_obj.title = document_title_var.replace(/\s/g, "\u00a0");
                 setTimeout(function () {
-                    document_obj.title = K
+                    document_obj.title = document_title_var
                 }, 250)
             }
 
@@ -328,26 +328,26 @@
                 clearTimeout(Fa);
                 if (L)a(); else {
                     if (ja)document_obj.title = document_obj.title ==
-                        K ? "..." : K;
+                        document_title_var ? "..." : document_title_var;
                     Fa = setTimeout(g, 1E3)
                 }
             })()
         }
 
-        function Va(a) {
+        function game_event_handler(a) {
             var c = a.name + "," + a.id;
             if ("undefined" == typeof ka[c] && (ka[c] = !1, Xa(), !t)) {
                 main_object(".body__game_over").removeClass("body__game_over");
-                var g = a.name, a = a.payload;
-                switch (g) {
+                var event_name = a.name, a = a.payload;
+                switch (event_name) {
                     case "rival-leave":
-                        j.reachGoal("rivalLeave");
-                        W();
+                        some_reach_goal_var_or_function.reachGoal("rivalLeave");
+                        add_to_body_class_game_over();
                         break;
                     case "waiting-for-rival":
                         main_object(".leave").removeClass("none");
                         main_object(".battlefield-start-hint").removeClass("none");
-                        z.addClass("battlefield__wait");
+                        own_battlefield_some_variable.addClass("battlefield__wait");
                         break;
                     case "chat-message-typing":
                         ha();
@@ -369,10 +369,10 @@
                         main_object(".leave").removeClass("none");
                         main_object(".battlefield-start").addClass("none");
                         main_object(".battlefield-stat").removeClass("none");
-                        p.removeClass("none");
+                        rival_battlefield_some_variable.removeClass("none");
                         ja = !0;
                         t = !1;
-                        /-on$/.test(g) ? (p.removeClass("battlefield__wait"), z.addClass("battlefield__wait")) : (p.addClass("battlefield__wait"), z.removeClass("battlefield__wait"));
+                        /-on$/.test(event_name) ? (rival_battlefield_some_variable.removeClass("battlefield__wait"), own_battlefield_some_variable.addClass("battlefield__wait")) : (rival_battlefield_some_variable.addClass("battlefield__wait"), own_battlefield_some_variable.removeClass("battlefield__wait"));
                         a = [];
                         for (d = 0; d < s.length; d++) {
                             for (var e = s[d], f = [], k = 0; k < e.count; k++) {
@@ -386,25 +386,25 @@
                         break;
                     case "move-on":
                         V();
-                        p.removeClass("battlefield__wait");
-                        z.addClass("battlefield__wait");
+                        rival_battlefield_some_variable.removeClass("battlefield__wait");
+                        own_battlefield_some_variable.addClass("battlefield__wait");
                         la(a);
                         break;
                     case "move-off":
-                        p.addClass("battlefield__wait");
-                        z.removeClass("battlefield__wait");
+                        rival_battlefield_some_variable.addClass("battlefield__wait");
+                        own_battlefield_some_variable.removeClass("battlefield__wait");
                         la(a);
                         break;
                     case "game-over-win":
                     case "game-over-lose":
-                        play_sound(g.replace(/game-over-/, ""));
+                        play_sound(event_name.replace(/game-over-/, ""));
                         la(a);
                         a = a.undiscovered;
-                        if ("undefined" != typeof a)for (d = 0; d < a.length; d++)e = a[d].y, f = a[d].x, p.find("tr:nth-child(" + (e + 1) + ") td:nth-child(" + (f + 1) + ")").addClass("battlefield-cell__undiscovered");
-                        j.reachGoal("gameOver");
-                        W()
+                        if ("undefined" != typeof a)for (d = 0; d < a.length; d++)e = a[d].y, f = a[d].x, rival_battlefield_some_variable.find("tr:nth-child(" + (e + 1) + ") td:nth-child(" + (f + 1) + ")").addClass("battlefield-cell__undiscovered");
+                        some_reach_goal_var_or_function.reachGoal("gameOver");
+                        add_to_body_class_game_over()
                 }
-                make_notification(g);
+                make_notification(event_name);
                 ka[c] = !0
             }
         }
@@ -415,9 +415,9 @@
 
         function la(a) {
             if ("undefined" != typeof a) {
-                var c = !1, g = z, d = ba, e = a["register-self-shoot"] || a["register-rival-shoot"], f = "battlefield-cell__miss";
+                var c = !1, g = own_battlefield_some_variable, d = ba, e = a["register-self-shoot"] || a["register-rival-shoot"], f = "battlefield-cell__miss";
                 "undefined" != typeof a["register-self-shoot"] && (c = !0);
-                if (e && "undefined" != e.state && (e.state >= ships_states.WOUNDED && (f = "battlefield-cell__hit"), e.state === ships_states.KILLED && (f += " battlefield-cell__done"), c ? (g = p,
+                if (e && "undefined" != e.state && (e.state >= ships_states.WOUNDED && (f = "battlefield-cell__hit"), e.state === ships_states.KILLED && (f += " battlefield-cell__done"), c ? (g = rival_battlefield_some_variable,
                     d = w) : (main_object(".battlefield-cell__last").removeClass("battlefield-cell__last"), f += " battlefield-cell__last"), !(d[e.y][e.x] >= ships_states.MISSED))) {
                     d[e.y][e.x] = e.state;
                     a = g.find("tr:nth-child(" + (e.y + 1) + ") td:nth-child(" + (e.x + 1) + ")");
@@ -494,13 +494,13 @@
                 if (J && !t)if ($)low_level_connection_invoker({command: "leave"}, !1); else return main_object(".leave").attr("data-confirm")
             });
             main_object(i).unload(function () {
-                J && (ja ? t || (low_level_connection_invoker({command: "leave"}, !1), j.reachGoal("leaveWhilePlaying", {exit: $ ? "click" : "close"})) : j.reachGoal("leaveWithoutPlaying", {exit: $ ? "click" : "close"}))
+                J && (ja ? t || (low_level_connection_invoker({command: "leave"}, !1), some_reach_goal_var_or_function.reachGoal("leaveWhilePlaying", {exit: $ ? "click" : "close"})) : some_reach_goal_var_or_function.reachGoal("leaveWithoutPlaying", {exit: $ ? "click" : "close"}))
             })
         }
 
         function Ta() {
             main_object(i).bind("online", function () {
-                j.reachGoal("online");
+                some_reach_goal_var_or_function.reachGoal("online");
                 main_object(".body").removeClass("body__offline")
             });
             main_object(i).bind("offline", function () {
@@ -598,7 +598,7 @@
         }
 
         var U = "battleship__", E = {}, h, F, http_call_attempt_num = 0, http_call_attempt_max = 10, timeout_id, Ca = 0, Ua = 5, J, ka = {}, Aa, N = !1, Ia, L =
-            !0, Fa, K, ja = !1, t = !1, $ = !1, S = main_object(".battlefield"), z = S.filter(".battlefield__self"), p = S.filter(".battlefield__rival");
+            !0, Fa, document_title_var, ja = !1, t = !1, $ = !1, whole_battlefield_some_variable = main_object(".battlefield"), own_battlefield_some_variable = whole_battlefield_some_variable.filter(".battlefield__self"), rival_battlefield_some_variable = whole_battlefield_some_variable.filter(".battlefield__rival");
         Q = 10;
         R = 10;
         aa = 0;
@@ -722,7 +722,7 @@
                         } else ea()
                     } else ea();
                     a = r;
-                    g = z;
+                    g = own_battlefield_some_variable;
                     for (var j in a) {
                         d = a[j].coords;
                         for (f = 0; f < d.length; f++)e = d[f], 0 === f && va(e.y, e.x, a[j].len, a[j].pos, g, a[j].id), g.find("tr:nth-child(" + (e.y + 1) + ") td:nth-child(" + (e.x + 1) + ")").removeClass("battlefield-cell__empty").addClass("battlefield-cell__busy")
@@ -776,7 +776,7 @@
             (function () {
                 var a = main_object(".chat-teletype");
                 a.bind("keydown", function (a) {
-                    13 == a.keyCode ? (a = main_object(".chat-teletype").val(), a = main_object.trim(a), "" != a ? (j.reachGoal("chatMessage"), N = !1, low_level_connection_invoker({command: "chat-message", message: a}, !0, x, http_error_handler_function), a = !0) : a = !1, a && main_object(".chat-teletype").val("")) : N || (N = !0, low_level_connection_invoker({command: "chat-message-typing"}, !0, x, http_error_handler_function))
+                    13 == a.keyCode ? (a = main_object(".chat-teletype").val(), a = main_object.trim(a), "" != a ? (some_reach_goal_var_or_function.reachGoal("chatMessage"), N = !1, low_level_connection_invoker({command: "chat-message", message: a}, !0, x, http_error_handler_function), a = !0) : a = !1, a && main_object(".chat-teletype").val("")) : N || (N = !0, low_level_connection_invoker({command: "chat-message-typing"}, !0, x, http_error_handler_function))
                 });
                 a.bind("keyup blur",
                     function (a) {
@@ -790,7 +790,7 @@
                     })
             })();
             (function () {
-                K = document_obj.title;
+                document_title_var = document_obj.title;
                 document_obj.onfocusin = function (a) {
                     "undefined" == typeof a && null == event.toElement && (L = !0)
                 };
@@ -859,6 +859,7 @@
                     a)
             }
         })();
+        //enabling link for Chrome
         i.chrome && i.chrome.webstore && main_object(".copyright-link__chrome").removeClass("none");
         "https:" == i.location.protocol && main_object(".body").addClass("body__ssl");
         (function () {
