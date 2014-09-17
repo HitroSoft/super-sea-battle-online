@@ -4,6 +4,17 @@ from rest_framework.response import Response
 import json
 from app_tables import MyTable
 
+class Retraslator(APIView):
+    renderer_classes = (JSONRenderer, )
+
+    def post(self, request, *args, **kw):
+        try:
+            user_id = int(kw['pk'])
+            user = MyTable().get_item(user_id)
+            return Response(user, status=200)
+        except Exception as e:
+            print(e)
+            return Response("user fetch failed. Exception : %s" % e.message, status=400)
 
 class MyUserWithParam(APIView):
     renderer_classes = (JSONRenderer, )
