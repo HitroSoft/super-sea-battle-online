@@ -235,7 +235,7 @@
                     c = u;
                     "ws" == a && (c = (variable_with_localization_from_domain_name || function_which_returns_localization_value) + "." + c);
                     e = a + "://" + c + "/ws/" + e;
-                    e = "ws://battleship-game.org.battleship-game.org/ws/ucCsIoZYqz9d";
+                    //e = "ws://battleship-game.org.battleship-game.org/ws/ucCsIoZYqz9d";
                     if (h &&
                         h.socket && h.socket.readyState === WebSocket.OPEN) {
                         if (h.socket.url === e) {
