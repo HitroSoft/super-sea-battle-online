@@ -58,7 +58,7 @@
                 ba[d] = [];
                 w[d] = [];
                 for (var e = 0; e < R; e++)a = "&#160;", 0 === e && (a += '<div class="marker marker__row">' + (d + 1) + "</div>"), 0 === d && (a +=
-                    '<div class="marker marker__col">' + Na[e] + "</div>"), g.push('<td class="battlefield-cell battlefield-cell__empty"><div class="battlefield-cell-content" data-y="' + d + '" data-x="' + e + '" >' + a + "</div></td>"), B[d][e] = aa, ba[d][e] = n.INITIALIZED, w[d][e] = n.INITIALIZED;
+                    '<div class="marker marker__col">' + Na[e] + "</div>"), g.push('<td class="battlefield-cell battlefield-cell__empty"><div class="battlefield-cell-content" data-y="' + d + '" data-x="' + e + '" >' + a + "</div></td>"), B[d][e] = aa, ba[d][e] = ships_states.INITIALIZED, w[d][e] = ships_states.INITIALIZED;
                 c.push('<tr class="battlefield-row">' + g.join("") + "</tr>")
             }
             a = main_object('<table class="battlefield-table">' + c.join("") + "</table>");
@@ -164,7 +164,7 @@
         function Pa(a, c, b) {
             a = parseInt(a, 10);
             c = parseInt(c, 10);
-            if ("undefined" != typeof w[a] && "undefined" != w[a][c] && w[a][c] === n.INITIALIZED)w[a][c] = n.PROCESSED, Qa(b);
+            if ("undefined" != typeof w[a] && "undefined" != w[a][c] && w[a][c] === ships_states.INITIALIZED)w[a][c] = ships_states.PROCESSED, Qa(b);
             low_level_connection_invoker({command: "register-shoot", shoot: {y: a, x: c}}, !0, function (a) {
                 V();
                 x(a)
@@ -417,21 +417,21 @@
             if ("undefined" != typeof a) {
                 var c = !1, g = z, d = ba, e = a["register-self-shoot"] || a["register-rival-shoot"], f = "battlefield-cell__miss";
                 "undefined" != typeof a["register-self-shoot"] && (c = !0);
-                if (e && "undefined" != e.state && (e.state >= n.WOUNDED && (f = "battlefield-cell__hit"), e.state === n.KILLED && (f += " battlefield-cell__done"), c ? (g = p,
-                    d = w) : (main_object(".battlefield-cell__last").removeClass("battlefield-cell__last"), f += " battlefield-cell__last"), !(d[e.y][e.x] >= n.MISSED))) {
+                if (e && "undefined" != e.state && (e.state >= ships_states.WOUNDED && (f = "battlefield-cell__hit"), e.state === ships_states.KILLED && (f += " battlefield-cell__done"), c ? (g = p,
+                    d = w) : (main_object(".battlefield-cell__last").removeClass("battlefield-cell__last"), f += " battlefield-cell__last"), !(d[e.y][e.x] >= ships_states.MISSED))) {
                     d[e.y][e.x] = e.state;
                     a = g.find("tr:nth-child(" + (e.y + 1) + ") td:nth-child(" + (e.x + 1) + ")");
                     a.removeClass("battlefield-cell__empty").addClass(f);
                     c && (a.find(".battlefield-cell-content").unbind("click", ga), V());
-                    if (e.state === n.KILLED) {
+                    if (e.state === ships_states.KILLED) {
                         var c = e.y, f = e.x, k = [];
-                        if (d[c][f] === n.KILLED) {
+                        if (d[c][f] === ships_states.KILLED) {
                             k.push({y: c, x: f});
-                            if ("undefined" != typeof d[c][f - 1] && d[c][f - 1] > n.MISSED || "undefined" != typeof d[c][f + 1] &&
-                                d[c][f + 1] > n.MISSED)for (var a = -1, h = 1, i, j = !1; !j; h++)i = f + a * h, "undefined" != d[c][i] && d[c][i] > n.MISSED ? k.push({y: c, x: i}) : 0 > a ? (a = 1, h = 0) : j = !0; else if ("undefined" != typeof d[c - 1] && "undefined" != typeof d[c - 1][f] && d[c - 1][f] > n.MISSED || "undefined" != typeof d[c + 1] && "undefined" != typeof d[c + 1][f] && d[c + 1][f] > n.MISSED) {
+                            if ("undefined" != typeof d[c][f - 1] && d[c][f - 1] > ships_states.MISSED || "undefined" != typeof d[c][f + 1] &&
+                                d[c][f + 1] > ships_states.MISSED)for (var a = -1, h = 1, i, j = !1; !j; h++)i = f + a * h, "undefined" != d[c][i] && d[c][i] > ships_states.MISSED ? k.push({y: c, x: i}) : 0 > a ? (a = 1, h = 0) : j = !0; else if ("undefined" != typeof d[c - 1] && "undefined" != typeof d[c - 1][f] && d[c - 1][f] > ships_states.MISSED || "undefined" != typeof d[c + 1] && "undefined" != typeof d[c + 1][f] && d[c + 1][f] > ships_states.MISSED) {
                                 a = -1;
                                 h = 1;
-                                for (j = !1; !j; h++)i = c + a * h, "undefined" != typeof d[i] && "undefined" != d[i][f] && d[i][f] > n.MISSED ? k.push({y: i, x: f}) : 0 > a ? (a = 1, h = 0) : j = !0
+                                for (j = !1; !j; h++)i = c + a * h, "undefined" != typeof d[i] && "undefined" != d[i][f] && d[i][f] > ships_states.MISSED ? k.push({y: i, x: f}) : 0 > a ? (a = 1, h = 0) : j = !0
                             }
                             for (c = 0; c < k.length; c++)f = k[c], g.find("tr:nth-child(" + (f.y + 1) + ") td:nth-child(" +
                                 (f.x + 1) + ")").addClass("battlefield-cell__done");
@@ -457,9 +457,9 @@
                             g.find(".battlefield-stat .ship[data-coords='" + k + "']").length || g.find(".battlefield-stat .ship-type__len_" +
                                 l + " .ship").filter(":not(.ship__killed)").last().attr("data-coords", k).addClass("ship__killed")
                         }
-                    } else if (e.state === n.WOUNDED)for (k in l = e.y, q = e.x, ma)m = l + ma[k][0], c = q + ma[k][1], sa(m, c, g, !0);
+                    } else if (e.state === ships_states.WOUNDED)for (k in l = e.y, q = e.x, ma)m = l + ma[k][0], c = q + ma[k][1], sa(m, c, g, !0);
                     a:{
-                        for (var o in n)if (e.state === n[o]) {
+                        for (var o in ships_states)if (e.state === ships_states[o]) {
                             e = o;
                             break a
                         }
@@ -617,7 +617,7 @@
         ]);
         var C = [];
         oa = -1;
-        var n = {INITIALIZED: -3, PROCESSED: -2, MISSED: -1, WOUNDED: 0, KILLED: 1};
+        var ships_states = {INITIALIZED: -3, PROCESSED: -2, MISSED: -1, WOUNDED: 0, KILLED: 1};
         G = 0;
         var D = [
             [-1, 0],
@@ -819,6 +819,8 @@
                     })
             })()
         })();
+
+        //this function changes http link to https if page protocol is https
         (function () {
             main_object(".lang-link").each(function () {
                 var a = main_object(this).attr("href");
