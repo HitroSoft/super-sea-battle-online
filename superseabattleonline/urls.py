@@ -1,11 +1,9 @@
 from django.conf.urls import patterns, include, url
-from api.views import MyUserWithParam, MyUserWithoutParam, Retraslator
+from api.views import Retraslator
 
 from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^users/(?P<pk>\d+)/?$', MyUserWithParam.as_view()),
-    url(r'^users/?$', MyUserWithoutParam.as_view()),
-    url(r'^services/w+?$', Retraslator.as_view()),
+    url(r'^services/(?P<pk>\w+)$', Retraslator.as_view()),
 )
