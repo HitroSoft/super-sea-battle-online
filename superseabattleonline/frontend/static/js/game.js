@@ -225,23 +225,23 @@
             "undefined" != typeof F && low_level_connection_invoker(F.obj, F.async, F.callback, F.fallback)
         }
 
-        function low_level_connection_invoker(a, c, g, d) {
+        function low_level_connection_invoker(a, c, success_handler, error_handler) {
             if (!t) {
                 var unknown_user_name_or_id = xa(window_obj.name).substr(U.length);
-                F = {obj: a, async: c, callback: g, fallback: d};
+                F = {obj: a, async: c, callback: success_handler, fallback: error_handler};
                 var f = JSON.stringify(a);
                 //web_sockets_available_for_usage = false; //uncomment this line to force JS connect to targetip/services/ where we can catch requests
                 if (web_sockets_available_for_usage) {
                     a = protocol_type_ws_or_wss_if_https();
                     c = u;
                     "ws" == a && (c = (variable_with_localization_from_domain_name || function_which_returns_localization_value) + "." + c);
-                    var e = a + "://" + c + "/ws/" + unknown_user_name_or_id;
+                    var web_service_uri = a + "://" + c + "/ws/" + unknown_user_name_or_id;
                     //e = "ws://battleship-game.org.battleship-game.org/ws/ucCsIoZYqz9d";
                     if (socket_object &&
                         socket_object.socket && socket_object.socket.readyState === WebSocket.OPEN) {
-                        if (socket_object.socket.url === e) {
-                            socket_object.ajax.callback = g;
-                            socket_object.ajax.fallback = d;
+                        if (socket_object.socket.url === web_service_uri) {
+                            socket_object.ajax.callback = success_handler;
+                            socket_object.ajax.fallback = error_handler;
                             socket_object.socket.send(f);
                             return
                         }
@@ -250,7 +250,7 @@
                         } catch (k) {
                         }
                     }
-                    socket_object = {ajax: new ia(g, d), socket: new WebSocket(e)};
+                    socket_object = {ajax: new ia(success_handler, error_handler), socket: new WebSocket(web_service_uri)};
                     socket_object.socket.onopen = function () {
                         socket_object.socket.send(f)
                     };
@@ -268,7 +268,7 @@
                         200 != a.status ? this.ajax.fallback.call(window_obj, a) : this.ajax.callback.call(window_obj,
                             a)
                     }.bind(socket_object)
-                } else c = "undefined" == typeof c || c ? !0 : !1, socket_object && 4 != socket_object.readyState && socket_object.abort && socket_object.abort(), socket_object = main_object.ajax({cache: !1, type: "post", dataType: "json", contentType: "application/json", url: path_for_post_to_service + unknown_user_name_or_id, data: f, async: c, error: d, success: g})
+                } else c = "undefined" == typeof c || c ? !0 : !1, socket_object && 4 != socket_object.readyState && socket_object.abort && socket_object.abort(), socket_object = main_object.ajax({cache: !1, type: "post", dataType: "json", contentType: "application/json", url: path_for_post_to_service + unknown_user_name_or_id, data: f, async: c, error: error_handler, success: success_handler})
             }
         }
 
