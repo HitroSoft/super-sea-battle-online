@@ -32,7 +32,7 @@
         return b
     }
 
-    var u = "battleship-game.org", La = get_site_localization_from_domain_name(), function_which_returns_localization_value = function () {
+    var u = "battleship-game.org", variable_with_localization_from_domain_name = get_site_localization_from_domain_name(), function_which_returns_localization_value = function () {
         var b = get_site_localization_from_domain_name(), localization_value = document_obj.documentElement.getAttribute("lang");
         2 == b.length ? localization_value = b : "https:" == i.location.protocol && (b = get_pathname_with_leading_slash().split("/"), 2 <= b.length &&
             2 == b[1].length && (localization_value = b[1]));
@@ -170,7 +170,7 @@
                 x(a)
             }, function (a) {
                 V();
-                y(a)
+                http_error_handler_function(a)
             })
         }
 
@@ -197,7 +197,7 @@
                 Sa();
                 Ta();
                 x(a)
-            }, y)
+            }, http_error_handler_function)
         }
 
         function ya(a) {
@@ -215,13 +215,13 @@
                 var a = 15E3;
                 "undefined" != typeof navigator.onLine && !navigator.onLine && (a = 1E3);
                 Aa = setTimeout(function () {
-                    low_level_connection_invoker({command: "ping"}, !0, x, y);
+                    low_level_connection_invoker({command: "ping"}, !0, x, http_error_handler_function);
                     za()
                 }, a)
             }
         }
 
-        function Ba() {
+        function make_some_call() {
             "undefined" != typeof F && low_level_connection_invoker(F.obj, F.async, F.callback, F.fallback)
         }
 
@@ -233,7 +233,7 @@
                 if (A) {
                     a = protocol_type_ws_or_wss_if_https();
                     c = u;
-                    "ws" == a && (c = (La || function_which_returns_localization_value) + "." + c);
+                    "ws" == a && (c = (variable_with_localization_from_domain_name || function_which_returns_localization_value) + "." + c);
                     e = a + "://" + c + "/ws/" + e;
                     e = "ws://battleship-game.org.battleship-game.org/ws/ucCsIoZYqz9d";
                     if (h &&
@@ -275,24 +275,24 @@
             var c = !1;
             a.events && (a.events.sort(function (a, c) {
                 return a.id - c.id
-            }), a = a.events.shift(), Va(a), Y(a), c = !0);
-            c || Y()
+            }), a = a.events.shift(), Va(a), waiting_for_event_http_call(a), c = !0);
+            c || waiting_for_event_http_call()
         }
 
-        function Y(a) {
+        function waiting_for_event_http_call(a) {
             if (J && !t) {
                 var c = {command: "waiting-for-event"};
                 if ("undefined" != typeof a)c.reid = a.id;
-                low_level_connection_invoker(c, !0, x, y)
+                low_level_connection_invoker(c, !0, x, http_error_handler_function)
             }
         }
 
-        function y(a) {
-            if (!t)switch (a.status) {
+        function http_error_handler_function(responce_var) {
+            if (!t)switch (responce_var.status) {
                 case 0:
                     setTimeout(function () {
                         if (!A &&
-                            0 === h.readyState || A && h.socket && h.socket.readyState == h.socket.CLOSED)j.reachGoal("reconnect"), Ba()
+                            0 === h.readyState || A && h.socket && h.socket.readyState == h.socket.CLOSED)j.reachGoal("reconnect"), make_some_call()
                     }, 1E3);
                     break;
                 case 501:
@@ -301,18 +301,18 @@
                     W();
                     break;
                 case 502:
-                    clearTimeout(Da);
-                    Ea < Wa ? Da = setTimeout(function () {
-                        Ea++;
-                        Ba()
+                    clearTimeout(timeout_id);
+                    http_call_attempt_num < http_call_attempt_max ? timeout_id = setTimeout(function () {
+                        http_call_attempt_num++;
+                        make_some_call()
                     }, 500) : (j.reachGoal("serverError"), make_notification("server-error"), W());
                     break;
                 case 408:
                 case 504:
-                    Y();
+                    waiting_for_event_http_call();
                     break;
                 default:
-                    Y()
+                    waiting_for_event_http_call()
             }
         }
 
@@ -597,7 +597,7 @@
             this.fallback = b
         }
 
-        var U = "battleship__", E = {}, h, F, Ea = 0, Wa = 10, Da, Ca = 0, Ua = 5, J, ka = {}, Aa, N = !1, Ia, L =
+        var U = "battleship__", E = {}, h, F, http_call_attempt_num = 0, http_call_attempt_max = 10, timeout_id, Ca = 0, Ua = 5, J, ka = {}, Aa, N = !1, Ia, L =
             !0, Fa, K, ja = !1, t = !1, $ = !1, S = main_object(".battlefield"), z = S.filter(".battlefield__self"), p = S.filter(".battlefield__rival");
         Q = 10;
         R = 10;
@@ -776,7 +776,7 @@
             (function () {
                 var a = main_object(".chat-teletype");
                 a.bind("keydown", function (a) {
-                    13 == a.keyCode ? (a = main_object(".chat-teletype").val(), a = main_object.trim(a), "" != a ? (j.reachGoal("chatMessage"), N = !1, low_level_connection_invoker({command: "chat-message", message: a}, !0, x, y), a = !0) : a = !1, a && main_object(".chat-teletype").val("")) : N || (N = !0, low_level_connection_invoker({command: "chat-message-typing"}, !0, x, y))
+                    13 == a.keyCode ? (a = main_object(".chat-teletype").val(), a = main_object.trim(a), "" != a ? (j.reachGoal("chatMessage"), N = !1, low_level_connection_invoker({command: "chat-message", message: a}, !0, x, http_error_handler_function), a = !0) : a = !1, a && main_object(".chat-teletype").val("")) : N || (N = !0, low_level_connection_invoker({command: "chat-message-typing"}, !0, x, http_error_handler_function))
                 });
                 a.bind("keyup blur",
                     function (a) {
@@ -784,7 +784,7 @@
                             var b = "blur" == a.type ? 0 : 3E3;
                             13 != a.keyCode && (clearTimeout(Ia), Ia = setTimeout(function () {
                                 N = !1;
-                                low_level_connection_invoker({command: "chat-message-stop-typing"}, !0, x, y)
+                                low_level_connection_invoker({command: "chat-message-stop-typing"}, !0, x, http_error_handler_function)
                             }, b))
                         }
                     })
