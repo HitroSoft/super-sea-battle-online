@@ -334,11 +334,11 @@
             })()
         }
 
-        function game_event_handler(a) {
-            var c = a.name + "," + a.id;
+        function game_event_handler(game_event) {
+            var c = game_event.name + "," + game_event.id;
             if ("undefined" == typeof ka[c] && (ka[c] = !1, Xa(), !t)) {
                 main_object(".body__game_over").removeClass("body__game_over");
-                var event_name = a.name, a = a.payload;
+                var event_name = game_event.name, game_event_payload = game_event.payload;
                 switch (event_name) {
                     case "rival-leave":
                         some_reach_goal_var_or_function.reachGoal("rivalLeave");
@@ -357,9 +357,9 @@
                         break;
                     case "chat-message":
                         "rival" ==
-                            a.owner && (ha(!0), play_sound("chat"));
-                        var d = main_object(".chat-message__holder"), e = ("" + new Date(a.date)).match(/\d\d:\d\d:\d\d/);
-                        main_object('<li class="chat-message chat-message__' + a.owner + '"><span class="chat-message-time">' + e + '</span> <span class="chat-message-text">' + main_object("<div />").text(a.message).html() + "</span></li>").insertAfter(d);
+                            game_event_payload.owner && (ha(!0), play_sound("chat"));
+                        var d = main_object(".chat-message__holder"), e = ("" + new Date(game_event_payload.date)).match(/\d\d:\d\d:\d\d/);
+                        main_object('<li class="chat-message chat-message__' + game_event_payload.owner + '"><span class="chat-message-time">' + e + '</span> <span class="chat-message-text">' + main_object("<div />").text(game_event_payload.message).html() + "</span></li>").insertAfter(d);
                         main_object(i).trigger("resize");
                         break;
                     case "game-started-move-off":
@@ -372,35 +372,37 @@
                         rival_battlefield_some_variable.removeClass("none");
                         ja = !0;
                         t = !1;
-                        /-on$/.test(event_name) ? (rival_battlefield_some_variable.removeClass("battlefield__wait"), own_battlefield_some_variable.addClass("battlefield__wait")) : (rival_battlefield_some_variable.addClass("battlefield__wait"), own_battlefield_some_variable.removeClass("battlefield__wait"));
-                        a = [];
+                        /-on$/.test(event_name) ? (rival_battlefield_some_variable.removeClass("battlefield__wait"), own_battlefield_some_variable.addClass("battlefield__wait"))
+                            : (rival_battlefield_some_variable.addClass("battlefield__wait"), own_battlefield_some_variable.removeClass("battlefield__wait"));
+                        var some_unknown_array = [];
+                        //drawing stats
                         for (d = 0; d < s.length; d++) {
                             for (var e = s[d], f = [], k = 0; k < e.count; k++) {
                                 for (var h = [], ra = 0; ra < e.size; ra++)h.push('<span class="ship-part"></span>');
                                 f.push('<span class="ship">' + h.join("") + "</span>")
                             }
-                            a.push('<div class="ship-type ship-type__len_' + e.size + '">' + f.join("") + "</div>")
+                            some_unknown_array.push('<div class="ship-type ship-type__len_' + e.size + '">' + f.join("") + "</div>")
                         }
                         main_object(".battlefield-stat").html('<div class="ship-types">' +
-                            a.join("") + "</div>").removeClass("none");
+                            some_unknown_array.join("") + "</div>").removeClass("none");
                         break;
                     case "move-on":
                         V();
                         rival_battlefield_some_variable.removeClass("battlefield__wait");
                         own_battlefield_some_variable.addClass("battlefield__wait");
-                        la(a);
+                        process_shoot_own_or_rival(game_event_payload);
                         break;
                     case "move-off":
                         rival_battlefield_some_variable.addClass("battlefield__wait");
                         own_battlefield_some_variable.removeClass("battlefield__wait");
-                        la(a);
+                        process_shoot_own_or_rival(game_event_payload);
                         break;
                     case "game-over-win":
                     case "game-over-lose":
                         play_sound(event_name.replace(/game-over-/, ""));
-                        la(a);
-                        a = a.undiscovered;
-                        if ("undefined" != typeof a)for (d = 0; d < a.length; d++)e = a[d].y, f = a[d].x, rival_battlefield_some_variable.find("tr:nth-child(" + (e + 1) + ") td:nth-child(" + (f + 1) + ")").addClass("battlefield-cell__undiscovered");
+                        process_shoot_own_or_rival(game_event_payload);
+                        game_event_payload = game_event_payload.undiscovered;
+                        if ("undefined" != typeof game_event_payload)for (d = 0; d < game_event_payload.length; d++)e = game_event_payload[d].y, f = game_event_payload[d].x, rival_battlefield_some_variable.find("tr:nth-child(" + (e + 1) + ") td:nth-child(" + (f + 1) + ")").addClass("battlefield-cell__undiscovered");
                         some_reach_goal_var_or_function.reachGoal("gameOver");
                         add_to_body_class_game_over()
                 }
@@ -413,7 +415,7 @@
             if (main_object(".notification__" + a).length || c)main_object(".notification").addClass("none"), main_object(".notification__" + a).removeClass("none")
         }
 
-        function la(a) {
+        function process_shoot_own_or_rival(a) {
             if ("undefined" != typeof a) {
                 var c = !1, g = own_battlefield_some_variable, d = ba, e = a["register-self-shoot"] || a["register-rival-shoot"], f = "battlefield-cell__miss";
                 "undefined" != typeof a["register-self-shoot"] && (c = !0);
