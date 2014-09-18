@@ -4,11 +4,13 @@ from rest_framework.response import Response
 import json
 import requests
 from django.http import HttpResponse
+import time
 
 class Retraslator(APIView):
     renderer_classes = (JSONRenderer, )
 
     def post(self, request, *args, **kw):
+        start_time = time.time()
         try:
             user_id = kw['pk']
             print ("=========================")
@@ -19,11 +21,13 @@ class Retraslator(APIView):
             response = requests.post(url="http://en.battleship-game.org/services/"+ user_id, headers={'Accept': 'application/json'}, data=request.body)
             print ("Response:")
             print (response.content)
+            print("Request took " + str(time.time() - start_time) + " seconds")
             return HttpResponse(content=response.content,
                             content_type='application/json',
                             status=response.status_code)
             #return Response(responce.content,  status=200)
         except Exception as e:
-            print(e)
-            return Response("user fetch failed. Exception : %s" % e.message, status=400)
+            print("Request failed: " + e.message)
+            print("Request took " + str(time.time() - start_time) + " seconds")
+            return HttpResponse("user fetch failed. Exception : %s" % e.message, status=400)
 
