@@ -132,7 +132,7 @@ class Game(object):
         events_to_send = []
         for i in range(self.first_player_response_received_id, self.first_player_response_id, 1):
             events_to_send.append(self.first_player_to_message_queue[i])
-        self.first_player_response_received_id = self.first_player_response_id
+        # self.first_player_response_received_id = self.first_player_response_id
         return events_to_send
 
     def ai_player_shoot(self):
@@ -238,6 +238,8 @@ class Imitator(APIView):
                         raise Exception("Game not found - no create event was detected")
                     if game.game_state=="waiting-for-rival":
                         game.attach_ai_player()
+                    if 'reid' in body_as_object:
+                        game.first_player_response_received_id = body_as_object['reid']
                     events = game.get_unreceived_events_for_first_player()
                     if events.__len__()==0 and game.game_state=="second-player-move" and random.randint(0,3) == 0:
                         game.ai_player_shoot()

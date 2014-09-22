@@ -311,8 +311,8 @@
                     break;
                 case 408:
                 case 504:
-                    setTimeout(function () {waiting_for_event_http_call();}, 1E3);
-//                    waiting_for_event_http_call();
+//                    setTimeout(function () {waiting_for_event_http_call();}, 1E3);
+                    waiting_for_event_http_call();
                     break;
                 default:
                     waiting_for_event_http_call()
