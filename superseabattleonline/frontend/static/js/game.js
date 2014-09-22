@@ -40,7 +40,8 @@
         return localization_value
     }(), path_for_post_to_service = "/services/";
     if (window_obj.MozWebSocket)window_obj.WebSocket = window_obj.MozWebSocket;
-    var web_sockets_available_for_usage = !!("WebSocket"in window_obj && 2 == WebSocket.CLOSING), some_reach_goal_var_or_function = {reachGoal: function (b, i) {
+    var web_sockets_available_for_usage = false,//= !!("WebSocket"in window_obj && 2 == WebSocket.CLOSING),
+        some_reach_goal_var_or_function = {reachGoal: function (b, i) {
         try {
             yaCounter20587900.reachGoal(b, i)
         } catch (j) {
@@ -230,9 +231,9 @@
                 var unknown_user_name_or_id = xa(window_obj.name).substr(U.length);
                 F = {obj: a, async: c, callback: success_handler, fallback: error_handler};
                 var f = JSON.stringify(a);
-                web_sockets_available_for_usage = false; //uncomment this line to force JS connect to targetip/services/ where we can catch requests
+                //web_sockets_available_for_usage = false; //uncomment this line to force JS connect to targetip/services/ where we can catch requests
                 if (web_sockets_available_for_usage) {
-                    a = protocol_type_ws_or_wss_if_https();
+                    var a = protocol_type_ws_or_wss_if_https();
                     c = u;
                     "ws" == a && (c = (variable_with_localization_from_domain_name || function_which_returns_localization_value) + "." + c);
                     var web_service_uri = a + "://" + c + "/ws/" + unknown_user_name_or_id;
@@ -310,7 +311,8 @@
                     break;
                 case 408:
                 case 504:
-                    waiting_for_event_http_call();
+                    setTimeout(function () {waiting_for_event_http_call();}, 1E3);
+//                    waiting_for_event_http_call();
                     break;
                 default:
                     waiting_for_event_http_call()
