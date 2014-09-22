@@ -95,6 +95,9 @@ class AIplayer(object):
 
 class Game(object):
 
+    def __init__(self):
+        self.game_name = ''.join(random.choice(string.ascii_letters) for _ in range(12))
+
     def attach_ai_player(self):
         self.ai_player = AIplayer()
         self.ai_player.join_game(self.game_name)
@@ -235,6 +238,7 @@ def waiting_for_event(user_id, json_data):
     # if events.__len__()==0:
     #     request
     if events.__len__()==0:
+        time.sleep(0.5)
         return HttpResponse(content=json.dumps({"id":game.game_name, "events":events}),
                 content_type='application/json',
                 status=504)
