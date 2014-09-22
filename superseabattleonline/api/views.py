@@ -97,6 +97,33 @@ class Game(object):
 
     def __init__(self):
         self.game_name = ''.join(random.choice(string.ascii_letters) for _ in range(12))
+        self.battlefield_first_player = None
+        self.battlefield_second_player = None
+        self.first_player_id = None
+        self.first_player_response_id = None
+        self.first_player_response_received_id = None
+        self.first_player_to_message_queue = None
+        self.second_player_id = None
+        self.second_player_response_id = None
+        self.second_player_response_received_id = None
+        self.second_player_to_message_queue = None
+        self.game_state = "empty-game"
+
+    def add_first_player(self, data):
+        self.first_player_id = ''.join(random.choice(string.ascii_letters) for _ in range(12))
+        self.first_player_response_id = 0
+        self.first_player_response_received_id = 0
+        self.battlefield_first_player = data['ships']
+        for ship in self.battlefield_first_player:
+            for cell in ship:
+                cell['STATE'] = ships_states['INITIALIZED']
+        self.first_player_to_message_queue = []
+        self.first_player_response_id += 1
+        self.first_player_to_message_queue.append({"name":"waiting-for-rival","id":self.first_player_response_id,"start":int(time.time())})
+
+        self.game_state = "waiting-for-rival"
+        return
+
 
     def attach_ai_player(self):
         self.ai_player = AIplayer()
@@ -116,7 +143,7 @@ class Game(object):
         return
 
     def start_game(self, data):
-        self.game_name = ''.join(random.choice(string.ascii_letters) for _ in range(12)) #str(randrange(10000000))
+        self.game_name = ''.join(random.choice(string.ascii_letters) for _ in range(12))
         self.battlefield_first_player = data['ships']
         for ship in self.battlefield_first_player:
             for cell in ship:
@@ -203,21 +230,25 @@ class Game(object):
         #     self.game_state = "second-player-move"
         return
 
-def find_game_by_name(game_name):
+def find_game_by_name(user_id):
     for game in game_list:
-        if game.game_name == game_name:
+        if game.first_player_id == user_id or game.second_player_id == user_id:
             return game
     return None
 
 def create_game(user_id, json_data):
-    game = find_game_by_name(user_id)
-    if game is None:
-        game = Game()
-        game_list.append(game)
-        game.start_game(json_data)
+    # game = find_game_by_name(user_id)
+    game = Game()
+    game.add_first_player(json_data)
+    game_list.append(game)
+    user_id = game.first_player_id
+    # if game is None:
+    #     game = Game()
+    #     game_list.append(game)
+    #     game.start_game(json_data)
     events = game.get_unreceived_events_for_first_player()
     lock.release()
-    return HttpResponse(content=json.dumps({"id":game.game_name, "events":events}),
+    return HttpResponse(content=json.dumps({"id":user_id, "events":events}),
                 content_type='application/json',
                 status=200)
 
@@ -233,17 +264,14 @@ def waiting_for_event(user_id, json_data):
     if events.__len__()==0 and game.game_state=="second-player-move" and random.randint(0,3) == 0:
         game.ai_player_shoot()
         events = game.get_unreceived_events_for_first_player()
-    # print("Events" + str(events))
     lock.release()
-    # if events.__len__()==0:
-    #     request
     if events.__len__()==0:
         time.sleep(0.5)
-        return HttpResponse(content=json.dumps({"id":game.game_name, "events":events}),
+        return HttpResponse(content=json.dumps({"id":user_id, "events":events}),
                 content_type='application/json',
                 status=504)
     else:
-        return HttpResponse(content=json.dumps({"id":game.game_name, "events":events}),
+        return HttpResponse(content=json.dumps({"id":user_id, "events":events}),
                 content_type='application/json',
                 status=200)
 def register_shoot(user_id, json_data):
@@ -258,7 +286,7 @@ def register_shoot(user_id, json_data):
     game.first_player_shoot(data=json_data)
     events = game.get_unreceived_events_for_first_player()
     lock.release()
-    return HttpResponse(content=json.dumps({"id":game.game_name, "events":events}),
+    return HttpResponse(content=json.dumps({"id":user_id, "events":events}),
                 content_type='application/json',
                 status=200)
 
