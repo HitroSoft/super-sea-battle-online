@@ -206,6 +206,59 @@ def find_game_by_name(game_name):
             return game
     return None
 
+def create_game(user_id, json_data):
+    game = find_game_by_name(user_id)
+    if game is None:
+        game = Game()
+        game_list.append(game)
+        game.start_game(json_data)
+    events = game.get_unreceived_events_for_first_player()
+    lock.release()
+    return HttpResponse(content=json.dumps({"id":game.game_name, "events":events}),
+                content_type='application/json',
+                status=200)
+
+def waiting_for_event(user_id, json_data):
+    game = find_game_by_name(user_id)
+    if game is None:
+        raise Exception("Game not found - no create event was detected")
+    if game.game_state=="waiting-for-rival":
+        game.attach_ai_player()
+    if 'reid' in json_data:
+        game.first_player_response_received_id = json_data['reid']
+    events = game.get_unreceived_events_for_first_player()
+    if events.__len__()==0 and game.game_state=="second-player-move" and random.randint(0,3) == 0:
+        game.ai_player_shoot()
+        events = game.get_unreceived_events_for_first_player()
+    # print("Events" + str(events))
+    lock.release()
+    # if events.__len__()==0:
+    #     request
+    if events.__len__()==0:
+        return HttpResponse(content=json.dumps({"id":game.game_name, "events":events}),
+                content_type='application/json',
+                status=504)
+    else:
+        return HttpResponse(content=json.dumps({"id":game.game_name, "events":events}),
+                content_type='application/json',
+                status=200)
+def register_shoot(user_id, json_data):
+    game = find_game_by_name(user_id)
+    if game is None:
+        raise Exception("Game not found - no create event was detected")
+    if game.game_state != "game-started-first-players-move" and  game.game_state != "first-player-move":
+        print "Error in game - game turn error!"
+        return HttpResponse(content="Error in game",
+                content_type='application/json',
+                status=501)
+    game.first_player_shoot(data=json_data)
+    events = game.get_unreceived_events_for_first_player()
+    lock.release()
+    return HttpResponse(content=json.dumps({"id":game.game_name, "events":events}),
+                content_type='application/json',
+                status=200)
+
+
 class Imitator(APIView):
     renderer_classes = (JSONRenderer, )
 
@@ -219,62 +272,17 @@ class Imitator(APIView):
                 # print ("UserId="+user_id)
                 # print ("Request:")
                 zz = request.body
-                body_as_object = json.loads(request.body)
-                # print(body_as_object)
-                if body_as_object['command']=="create":
-                    game = find_game_by_name(user_id)
-                    if game is None:
-                        game = Game()
-                        game_list.append(game)
-                        game.start_game(body_as_object)
-                    events = game.get_unreceived_events_for_first_player()
-                    lock.release()
-                    return HttpResponse(content=json.dumps({"id":game.game_name, "events":events}),
-                                content_type='application/json',
-                                status=200)
-                if body_as_object['command']=="waiting-for-event":
-                    game = find_game_by_name(user_id)
-                    if game is None:
-                        raise Exception("Game not found - no create event was detected")
-                    if game.game_state=="waiting-for-rival":
-                        game.attach_ai_player()
-                    if 'reid' in body_as_object:
-                        game.first_player_response_received_id = body_as_object['reid']
-                    events = game.get_unreceived_events_for_first_player()
-                    if events.__len__()==0 and game.game_state=="second-player-move" and random.randint(0,3) == 0:
-                        game.ai_player_shoot()
-                        events = game.get_unreceived_events_for_first_player()
-                    # print("Events" + str(events))
-                    lock.release()
-                    # if events.__len__()==0:
-                    #     request
-                    if events.__len__()==0:
-                        return HttpResponse(content=json.dumps({"id":game.game_name, "events":events}),
-                                content_type='application/json',
-                                status=504)
-                    else:
-                        return HttpResponse(content=json.dumps({"id":game.game_name, "events":events}),
-                                content_type='application/json',
-                                status=200)
-                if body_as_object['command']=="register-shoot":
-                    game = find_game_by_name(user_id)
-                    if game is None:
-                        raise Exception("Game not found - no create event was detected")
-                    if game.game_state != "game-started-first-players-move" and  game.game_state != "first-player-move":
-                        print "Error in game - game turn error!"
-                        return HttpResponse(content="Error in game",
-                                content_type='application/json',
-                                status=501)
-                    game.first_player_shoot(data=body_as_object)
-                    events = game.get_unreceived_events_for_first_player()
-                    lock.release()
-                    return HttpResponse(content=json.dumps({"id":game.game_name, "events":events}),
-                                content_type='application/json',
-                                status=200)
-
-
+                json_data = json.loads(request.body)
+                # print(json_data)
+                if json_data['command']=="create":
+                    return create_game(user_id=user_id, json_data=json_data)
+                if json_data['command']=="waiting-for-event":
+                    return waiting_for_event(user_id=user_id,json_data=json_data)
+                if json_data['command']=="register-shoot":
+                    return register_shoot(user_id=user_id, json_data=json_data)
 
                 lock.release()
+                print "Unknown command " + str(json_data)
                 return HttpResponse(content=None,
                                 content_type='application/json',
                                 status=504)
@@ -299,7 +307,6 @@ class Imitator(APIView):
         except:
             print("WTF????")
         finally:
-            print ("Finally")
             if lock.locked():
                 print("locked")
 
