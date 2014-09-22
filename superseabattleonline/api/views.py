@@ -108,6 +108,7 @@ class Game(object):
         self.second_player_response_received_id = None
         self.second_player_to_message_queue = None
         self.game_state = "empty-game"
+        self.ai_allowed = True
 
     def add_first_player(self, data):
         self.first_player_id = ''.join(random.choice(string.ascii_letters) for _ in range(12))
@@ -230,6 +231,62 @@ class Game(object):
         #     self.game_state = "second-player-move"
         return
 
+    def make_player_shoot(self,user_num,x,y):
+        # shoot = data['shoot']
+        # x = shoot['x']
+        # y = shoot['y']
+        if user_num==1:
+            target_battlefield = self.battlefield_second_player
+        else:
+            target_battlefield = self.battlefield_first_player
+        result = ships_states['MISSED']
+
+        for ship in target_battlefield:
+            for cell in ship:
+                if x == cell['x'] and y ==cell['y']:
+                    cell['STATE']=ships_states['WOUNDED']
+                    ship_killed=True
+                    for cell2 in ship:
+                        if cell2['STATE'] != ships_states['WOUNDED'] and cell2['STATE'] != ships_states['KILLED']:
+                            ship_killed=False
+                    if ship_killed:
+                        for cell2 in ship:
+                            cell2['STATE'] = ships_states['KILLED']
+                        result = ships_states['KILLED']
+                    else:
+                        result = ships_states['WOUNDED']
+
+        if result in [ships_states['WOUNDED'], ships_states['KILLED']]:
+            if user_num==1:
+                self.game_state = "first-player-move"
+                first_user_action = "move-on"
+                second_user_action = "move-off"
+            else:
+                self.game_state = "second-player-move"
+                first_user_action = "move-off"
+                second_user_action = "move-on"
+        else:
+            if user_num==1:
+                self.game_state = "second-player-move"
+                first_user_action = "move-off"
+                second_user_action = "move-on"
+            else:
+                self.game_state = "first-player-move"
+                first_user_action = "move-on"
+                second_user_action = "move-off"
+        if user_num==1:
+            self.first_player_response_id += 1
+            self.first_player_to_message_queue.append({"name":first_user_action,"id":self.first_player_response_id,"start":int(time.time()), "payload":{"register-self-shoot":{"y":y,"x":x,"state":result}}})
+            self.second_player_response_id += 1
+            self.second_player_to_message_queue.append({"name":second_user_action,"id":self.second_player_response_id,"start":int(time.time()), "payload":{"register-rival-shoot":{"y":y,"x":x,"state":result}}})
+        else:
+            self.first_player_response_id += 1
+            self.first_player_to_message_queue.append({"name":first_user_action,"id":self.first_player_response_id,"start":int(time.time()), "payload":{"register-rival-shoot":{"y":y,"x":x,"state":result}}})
+            self.second_player_response_id += 1
+            self.second_player_to_message_queue.append({"name":second_user_action,"id":self.second_player_response_id,"start":int(time.time()), "payload":{"register-self-shoot":{"y":y,"x":x,"state":result}}})
+        return
+
+
 def find_game_by_name(user_id):
     for game in game_list:
         if game.first_player_id == user_id or game.second_player_id == user_id:
@@ -256,12 +313,12 @@ def waiting_for_event(user_id, json_data):
     game = find_game_by_name(user_id)
     if game is None:
         raise Exception("Game not found - no create event was detected")
-    if game.game_state=="waiting-for-rival":
+    if game.game_state=="waiting-for-rival" and game.ai_allowed:
         game.attach_ai_player()
     if 'reid' in json_data:
         game.first_player_response_received_id = json_data['reid']
     events = game.get_unreceived_events_for_first_player()
-    if events.__len__()==0 and game.game_state=="second-player-move" and random.randint(0,3) == 0:
+    if events.__len__()==0 and game.game_state=="second-player-move" and random.randint(0,3) == 0 and game.ai_allowed:
         game.ai_player_shoot()
         events = game.get_unreceived_events_for_first_player()
     lock.release()
@@ -283,7 +340,10 @@ def register_shoot(user_id, json_data):
         return HttpResponse(content="Error in game",
                 content_type='application/json',
                 status=501)
-    game.first_player_shoot(data=json_data)
+    x = json_data['shoot']['x']
+    y = json_data['shoot']['y']
+    game.make_player_shoot(user_num=1,x=x, y=y)
+    # game.first_player_shoot(data=json_data)
     events = game.get_unreceived_events_for_first_player()
     lock.release()
     return HttpResponse(content=json.dumps({"id":user_id, "events":events}),
