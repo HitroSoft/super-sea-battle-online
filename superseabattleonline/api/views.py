@@ -187,6 +187,8 @@ class Game(object):
         #     self.game_state = "second-player-move"
         return
 
+
+
     def first_player_shoot(self, data):
         shoot = data['shoot']
         x = shoot['x']
@@ -319,7 +321,9 @@ def waiting_for_event(user_id, json_data):
         game.first_player_response_received_id = json_data['reid']
     events = game.get_unreceived_events_for_first_player()
     if events.__len__()==0 and game.game_state=="second-player-move" and random.randint(0,3) == 0 and game.ai_allowed:
-        game.ai_player_shoot()
+        x,y = game.ai_player.make_shoot()
+        game.make_player_shoot(user_num=2,x=x, y=y)
+        # game.ai_player_shoot()
         events = game.get_unreceived_events_for_first_player()
     lock.release()
     if events.__len__()==0:
