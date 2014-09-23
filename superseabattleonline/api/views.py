@@ -101,20 +101,21 @@ class AIplayer(object):
         return
 
     def mark_all_cells_next_to_killed_as_killed(self,x,y):
+        self.enemy_field[x][y] =  ships_states['KILLED']
         for x1 in range(x,10,1):
-            if self.enemy_field[x1][y]!=ships_states['WOUNDED']:
+            if self.enemy_field[x1][y]!=ships_states['WOUNDED'] or self.enemy_field[x1][y]!=ships_states['KILLED']:
                 break
             self.enemy_field[x1][y] = ships_states['KILLED']
         for x1 in range(x,-1,-1):
-            if self.enemy_field[x1][y]!=ships_states['WOUNDED']:
+            if self.enemy_field[x1][y]!=ships_states['WOUNDED'] or self.enemy_field[x1][y]!=ships_states['KILLED']:
                 break
             self.enemy_field[x1][y] = ships_states['KILLED']
         for y1 in range(y,10,1):
-            if self.enemy_field[x][y1]!=ships_states['WOUNDED']:
+            if self.enemy_field[x][y1]!=ships_states['WOUNDED'] or self.enemy_field[x][y1]!=ships_states['KILLED']:
                 break
             self.enemy_field[x][y1] = ships_states['KILLED']
         for y1 in range(y,-1,-1):
-            if self.enemy_field[x][y1]!=ships_states['WOUNDED']:
+            if self.enemy_field[x][y1]!=ships_states['WOUNDED']or self.enemy_field[x][y1]!=ships_states['KILLED']:
                 break
             self.enemy_field[x][y1] = ships_states['KILLED']
         return
