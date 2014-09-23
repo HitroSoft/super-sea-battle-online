@@ -10,6 +10,19 @@ from random import randrange
 import random
 import string
 import json
+import ConfigParser
+from superseabattleonline.settings import BASE_DIR
+import os
+
+def get_value_from_config(name):
+    try:
+        config = ConfigParser.RawConfigParser()
+        filename = os.path.join(BASE_DIR, "data/bot_dictionary.conf")
+        config.read(filename)
+        return config.get(name,"message")
+    except Exception as e:
+        print (e)
+        return None
 
 
 lock = threading.Lock()
@@ -224,6 +237,10 @@ class Game(object):
         self.second_player_response_id += 1
         self.second_player_to_message_queue.append({"name":"game-started-move-off","id":self.second_player_response_id,"start":int(time.time())})
         self.game_state = "game-started-first-players-move"
+
+        self.first_player_response_id += 1
+        self.first_player_to_message_queue.append({"name":"chat-message","id":self.first_player_response_id,"start":int(time.time()),"payload":{"message":get_value_from_config("Greetings"),"owner":"qwe","date":int(time.time())}})
+        # {u'message': u'123', u'command': u'chat-message'}
         return
 
     def start_game(self, data):
