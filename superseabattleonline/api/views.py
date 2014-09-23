@@ -87,6 +87,7 @@ class AIplayer(object):
         x2 = x+1
         y1 = y -1
         y2 = y +1
+        self.enemy_field[x][y]=ships_states['WOUNDED']
         self.point_cell_as_processed(x1,y1)
         self.point_cell_as_processed(x1,y2)
         self.point_cell_as_processed(x2,y1)
@@ -126,6 +127,14 @@ class AIplayer(object):
 
 
     def make_shoot(self):
+        for event in self.my_game.second_player_to_message_queue:
+            if "payload" in event:
+                payload = event['payload']
+                if 'register-self-shoot' in payload:
+                    self_shoot = payload['register-self-shoot']
+                    if self_shoot['state']==ships_states['MISSED']:
+                        self.enemy_field[self_shoot['x']][self_shoot['y']]=ships_states['MISSED']
+
         if self.my_game.second_player_response_id>0:
             last_event = self.my_game.second_player_to_message_queue[self.my_game.second_player_response_id-1]
             if "payload" in last_event:
@@ -136,13 +145,25 @@ class AIplayer(object):
                         self.mark_all_cells_next_to_killed_as_killed(succ_self_shoot['x'],succ_self_shoot['y'])
                     if succ_self_shoot['state']==ships_states['WOUNDED']:
                         self.point_wounded_cell(succ_self_shoot['x'],succ_self_shoot['y'])
-        self.mark_all_cells_near_killed_as_processed()
 
+        self.mark_all_cells_near_killed_as_processed()
+        for x in range(0,10,1):
+            for y in range(0,10,1):
+                if self.enemy_field[x][y]==ships_states['WOUNDED']: # we have wonded cell which is not killed yet - try to kill this ship
+                    if x>0 and self.enemy_field[x-1][y]==ships_states['INITIALIZED']:
+                        return x-1,y
+                    if x<9 and self.enemy_field[x+1][y]==ships_states['INITIALIZED']:
+                        return x+1,y
+                    if y>0 and self.enemy_field[x][y-1]==ships_states['INITIALIZED']:
+                        return x,y-1
+                    if y<9 and self.enemy_field[x][y+1]==ships_states['INITIALIZED']:
+                        return x,y+1
+        # otherwise fire at random position
         while True:
             x = random.randint(0,9)
             y = random.randint(0,9)
             if (self.enemy_field[x][y]==ships_states['INITIALIZED']): # make shoot
-                self.enemy_field[x][y] = ships_states['MISSED']
+                # self.enemy_field[x][y] = ships_states['MISSED']
                 return x,y
         return
                 # self.first_player_response_id += 1
