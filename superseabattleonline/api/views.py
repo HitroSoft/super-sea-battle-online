@@ -66,8 +66,8 @@ class AIplayer(object):
                 self.enemy_field[i][i1] = ships_states['INITIALIZED']
 
 
-    def join_game(self, game_name):
-        self.my_game = game_name
+    def join_game(self, game):
+        self.my_game = game
         self.generate_own_battlefield()
         self.generate_enemy_field()
         return
@@ -76,7 +76,68 @@ class AIplayer(object):
         self.ai_battlefield = [[{u'y': 0, u'x': 8}, {u'y': 1, u'x': 8}, {u'y': 2, u'x': 8}, {u'y': 3, u'x': 8}], [{u'y': 3, u'x': 3}, {u'y': 3, u'x': 4}, {u'y': 3, u'x': 5}], [{u'y': 6, u'x': 7}, {u'y': 7, u'x': 7}, {u'y': 8, u'x': 7}], [{u'y': 4, u'x': 1}, {u'y': 5, u'x': 1}], [{u'y': 0, u'x': 4}, {u'y': 0, u'x': 5}], [{u'y': 8, u'x': 3}, {u'y': 9, u'x': 3}], [{u'y': 5, u'x': 3}], [{u'y': 8, u'x': 1}], [{u'y': 8, u'x': 9}], [{u'y': 8, u'x': 5}]]
         return
 
+    def point_cell_as_processed(self,x,y):
+        if x<0 or x>9 or y<0 or y>9 or self.enemy_field[x][y]!=ships_states['INITIALIZED']:
+            return
+        self.enemy_field[x][y] = ships_states['PROCESSED']
+        return
+
+    def point_wounded_cell(self,x,y):
+        x1 = x -1
+        x2 = x+1
+        y1 = y -1
+        y2 = y +1
+        self.point_cell_as_processed(x1,y1)
+        self.point_cell_as_processed(x1,y2)
+        self.point_cell_as_processed(x2,y1)
+        self.point_cell_as_processed(x2,y2)
+        return
+
+    def point_killed_cell(self,x,y):
+        for x1 in range(x-1,x+2,1):
+            for y1 in range(y-1,y+2,1):
+                self.point_cell_as_processed(x1,y1)
+        return
+
+    def mark_all_cells_next_to_killed_as_killed(self,x,y):
+        for x1 in range(x,10,1):
+            if self.enemy_field[x1][y]!=ships_states['WOUNDED']:
+                break
+            self.enemy_field[x1][y] = ships_states['KILLED']
+        for x1 in range(x,-1,-1):
+            if self.enemy_field[x1][y]!=ships_states['WOUNDED']:
+                break
+            self.enemy_field[x1][y] = ships_states['KILLED']
+        for y1 in range(y,10,1):
+            if self.enemy_field[x][y1]!=ships_states['WOUNDED']:
+                break
+            self.enemy_field[x][y1] = ships_states['KILLED']
+        for y1 in range(y,-1,-1):
+            if self.enemy_field[x][y1]!=ships_states['WOUNDED']:
+                break
+            self.enemy_field[x][y1] = ships_states['KILLED']
+        return
+
+    def mark_all_cells_near_killed_as_processed(self):
+        for x in range(0,10,1):
+            for y in range (0,10,1):
+                if self.enemy_field[x][y]==ships_states['KILLED']:
+                    self.point_killed_cell(x,y)
+
+
     def make_shoot(self):
+        if self.my_game.second_player_response_id>0:
+            last_event = self.my_game.second_player_to_message_queue[self.my_game.second_player_response_id-1]
+            if "payload" in last_event:
+                payload = last_event['payload']
+                if 'register-self-shoot' in payload:
+                    succ_self_shoot = payload['register-self-shoot']
+                    if succ_self_shoot['state']==ships_states['KILLED']:
+                        self.mark_all_cells_next_to_killed_as_killed(succ_self_shoot['x'],succ_self_shoot['y'])
+                    if succ_self_shoot['state']==ships_states['WOUNDED']:
+                        self.point_wounded_cell(succ_self_shoot['x'],succ_self_shoot['y'])
+        self.mark_all_cells_near_killed_as_processed()
+
         while True:
             x = random.randint(0,9)
             y = random.randint(0,9)
@@ -128,7 +189,7 @@ class Game(object):
 
     def attach_ai_player(self):
         self.ai_player = AIplayer()
-        self.ai_player.join_game(self.game_name)
+        self.ai_player.join_game(self)
         self.battlefield_second_player = list(self.ai_player.ai_battlefield)
         for ship in self.battlefield_second_player:
             for cell in ship:
@@ -188,50 +249,6 @@ class Game(object):
         return
 
 
-
-    def first_player_shoot(self, data):
-        shoot = data['shoot']
-        x = shoot['x']
-        y = shoot['y']
-        result = ships_states['MISSED']
-        for ship in self.battlefield_second_player:
-            for cell in ship:
-                if x == cell['x'] and y ==cell['y']:
-                    cell['STATE']=ships_states['WOUNDED']
-                    ship_killed=True
-                    for cell2 in ship:
-                        if cell2['STATE'] != ships_states['WOUNDED'] and cell2['STATE'] != ships_states['KILLED']:
-                            ship_killed=False
-                    if ship_killed:
-                        for cell2 in ship:
-                            cell2['STATE'] = ships_states['KILLED']
-                        result = ships_states['KILLED']
-                    else:
-                        result = ships_states['WOUNDED']
-
-                    # self.first_player_response_id += 1
-                    # self.first_player_to_message_queue.append({"name":"move-on","id":self.first_player_response_id,"start":int(time.time()), "payload":{"register-self-shoot":{"y":y,"x":x,"state":ships_states['WOUNDED']}}})
-                    # self.second_player_response_id += 1
-                    # self.second_player_to_message_queue.append({"name":"move-off","id":self.second_player_response_id,"start":int(time.time()), "payload":{"register-rival-shoot":{"y":y,"x":x,"state":ships_states['WOUNDED']}}})
-                    # self.game_state = "first-player-move"
-                    # return
-        if result in [ships_states['WOUNDED'], ships_states['KILLED']]:
-            self.game_state = "first-player-move"
-            first_user_action = "move-on"
-            second_user_action = "move-off"
-        else:
-            self.game_state = "second-player-move"
-            first_user_action = "move-off"
-            second_user_action = "move-on"
-        self.first_player_response_id += 1
-        self.first_player_to_message_queue.append({"name":first_user_action,"id":self.first_player_response_id,"start":int(time.time()), "payload":{"register-self-shoot":{"y":y,"x":x,"state":result}}})
-        self.second_player_response_id += 1
-        self.second_player_to_message_queue.append({"name":second_user_action,"id":self.second_player_response_id,"start":int(time.time()), "payload":{"register-rival-shoot":{"y":y,"x":x,"state":result}}})
-        # if result in [ships_states['WOUNDED'], ships_states['KILLED']]:
-        #     self.game_state = "first-player-move"
-        # else:
-        #     self.game_state = "second-player-move"
-        return
 
     def make_player_shoot(self,user_num,x,y):
         # shoot = data['shoot']
