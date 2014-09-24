@@ -34,10 +34,10 @@ class AIplayer(object):
 
     def generate_enemy_field(self):
         self.enemy_field = dict()
-        for i in range(0, 10, 1):
-            self.enemy_field[i] = dict()
-            for i1 in range(0, 10, 1):
-                self.enemy_field[i][i1] = ships_states['INITIALIZED']
+        for x in range(0, 10, 1):
+            self.enemy_field[x] = dict()
+            for y in range(0, 10, 1):
+                self.enemy_field[x][y] = ships_states['INITIALIZED']
 
 
     def join_game(self, game):
@@ -77,19 +77,19 @@ class AIplayer(object):
     def mark_all_cells_next_to_killed_as_killed(self,x,y):
         self.enemy_field[x][y] =  ships_states['KILLED']
         for x1 in range(x,10,1):
-            if self.enemy_field[x1][y]!=ships_states['WOUNDED'] or self.enemy_field[x1][y]!=ships_states['KILLED']:
+            if self.enemy_field[x1][y] not in [ships_states['WOUNDED'],ships_states['KILLED']]:
                 break
             self.enemy_field[x1][y] = ships_states['KILLED']
         for x1 in range(x,-1,-1):
-            if self.enemy_field[x1][y]!=ships_states['WOUNDED'] or self.enemy_field[x1][y]!=ships_states['KILLED']:
+            if self.enemy_field[x1][y] not in [ships_states['WOUNDED'],ships_states['KILLED']]:
                 break
             self.enemy_field[x1][y] = ships_states['KILLED']
         for y1 in range(y,10,1):
-            if self.enemy_field[x][y1]!=ships_states['WOUNDED'] or self.enemy_field[x][y1]!=ships_states['KILLED']:
+            if self.enemy_field[x][y1] not in [ships_states['WOUNDED'],ships_states['KILLED']]:
                 break
             self.enemy_field[x][y1] = ships_states['KILLED']
         for y1 in range(y,-1,-1):
-            if self.enemy_field[x][y1]!=ships_states['WOUNDED']or self.enemy_field[x][y1]!=ships_states['KILLED']:
+            if self.enemy_field[x][y1] not in [ships_states['WOUNDED'],ships_states['KILLED']]:
                 break
             self.enemy_field[x][y1] = ships_states['KILLED']
         return
