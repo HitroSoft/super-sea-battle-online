@@ -44,8 +44,9 @@ while True:
         bb=subprocess.Popen(['pgrep','-f',"/usr/bin/python manage.py"],stdout=subprocess.PIPE)
         output, err = bb.communicate()
         print output
-        subprocess.Popen(['sudo','kill','-9',output.replace("\n","")])
+        subprocess.Popen(['sudo','kill','-9',output.split("\n")[0]])
         print "server killed"
+        subprocess.call(("git --work-tree="+target_folder+" --git-dir="+target_folder+"/.git fetch origin").split(" "))
         subprocess.Popen(("git --work-tree="+target_folder+" --git-dir="+target_folder+"/.git checkout --force -b deploy_to_server origin/deploy_to_server").split(" "),stdout=subprocess.PIPE)
         subprocess.Popen("python manage.py runserver 0.0.0.0:8000".split(" "),stdout=subprocess.PIPE)
 
