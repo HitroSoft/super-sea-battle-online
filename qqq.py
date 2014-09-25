@@ -41,8 +41,8 @@ while True:
     print output
     if output.split('\n')[0]!=results['refs/heads/deploy_to_server']:
         print "changes detected"
-        aa=subprocess.Popen(['pgrep','-f',"/usr/bin/python manage.py"])
-        output, err = aa.communicate()
+        bb=subprocess.Popen(['pgrep','-f',"/usr/bin/python manage.py"])
+        output, err = bb.communicate()
         print output
         subprocess.Popen(['sudo','kill','-9',output])
         print "server killed"
