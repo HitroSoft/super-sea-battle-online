@@ -41,10 +41,10 @@ while True:
     print output
     if output.split('\n')[0]!=results['refs/heads/deploy_to_server']:
         print "changes detected"
-        bb=subprocess.Popen(['pgrep','-f',"/usr/bin/python manage.py"])
+        bb=subprocess.Popen(['pgrep','-f',"/usr/bin/python manage.py"],stdout=subprocess.PIPE)
         output, err = bb.communicate()
         print output
-        subprocess.Popen(['sudo','kill','-9',output])
+        subprocess.Popen(['sudo','kill','-9',output.replace("\n","")])
         print "server killed"
         subprocess.Popen(("git --work-tree="+target_folder+" --git-dir="+target_folder+"/.git checkout -b deploy_to_server origin/deploy_to_server").split(" "),stdout=subprocess.PIPE)
         subprocess.Popen("python manage.py runserver 0.0.0.0:8000".split(" "),stdout=subprocess.PIPE)
