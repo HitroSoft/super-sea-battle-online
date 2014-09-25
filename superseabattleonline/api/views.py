@@ -266,6 +266,12 @@ class Game(object):
     #     return
 
     def check_are_all_ships_killed(self, user_num):
+        first_player_ships_killed = True
+        for ship in self.battlefield_first_player:
+            for cell in ship:
+                if cell['STATE']!=ships_states['KILLED']:
+                    first_player_ships_killed = False
+                    break
         return
 
     def make_player_shoot(self,user_num,x,y):
