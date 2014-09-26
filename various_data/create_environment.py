@@ -3,7 +3,8 @@ __author__ = 'yrafalsky'
 sudo su - root
 cd /home/ubuntu/
 copy this script there
-run it
+run it "nohup python create_environment.py &"
+
 script will install git, GitPython
 after that it will clone project to BASE_DIR/super-sea-battle-online
 after that it will checkout deploy_to_server branch
