@@ -31,21 +31,93 @@ class AIplayer(object):
         self.generate_enemy_field()
         return
 
+    def is_ship_fit_to_battlefield(self,x,y,size,orientation, field):
+        if orientation=='vertical':
+            if y+size-1 >9:
+                return False
+            for y1 in range(y,y+size,1):
+                if field[x][y1]!=ships_states['INITIALIZED']:
+                    return False
+            return True
+        else:
+            if x+size-1 >9:
+                return False
+            for x1 in range(x,x+size,1):
+                if field[x1][y]!=ships_states['INITIALIZED']:
+                    return False
+            return True
+
+    def mark_cells_for_ship_as_killed(self,x,y,size,orientation, field):
+        if orientation=='vertical':
+            if y+size-1 >9:
+                return False
+            for y1 in range(y,y+size,1):
+                if field[x][y1]!=ships_states['INITIALIZED']:
+                    return False
+            return True
+        else:
+            if x+size-1 >9:
+                return False
+            for x1 in range(x,x+size,1):
+                if field[x1][y]!=ships_states['INITIALIZED']:
+                    return False
+            return True
+
+
+    def generate_ship(self,x,y,size,orientation):
+        result_list = []
+        if orientation=='vertical':
+            if y+size-1 >9:
+                raise Exception("Wrong ship generation")
+            for y1 in range(y,y+size,1):
+                result_list.append({"x":x,"y":y1})
+            return result_list
+        else:
+            if x+size-1 >9:
+                raise Exception("Wrong ship generation")
+            for x1 in range(x,x+size,1):
+                result_list.append({"x":x1,"y":y})
+            return result_list
+
     def generate_my_random_battlefield(self):
-        my_ships = list()
-        for x in range(0, 5, 1):
-            my_ship = list()
-            my_ship.append({'x':random.randint(0,9), 'y':random.randint(0,9)})
-            my_ships.append(my_ship)
-        return my_ships
+        my_field = dict()
+        for x in range(0, 10, 1):
+            my_field[x] = dict()
+            for y in range(0, 10, 1):
+                my_field[x][y] = ships_states['INITIALIZED']
+        ships_to_create = [4,3,3,2,2,2,1,1,1,1]
+        ships_result = []
+        for size in ships_to_create:
+            while True:
+                x = random.randint(0,9)
+                y = random.randint(0,9)
+                if random.randint(0,1)==0:
+                    orient = 'vertical'
+                else:
+                    orient = 'horizontal'
+                if self.is_ship_fit_to_battlefield(x,y,size,orient,my_field):
+                    random_ship = self.generate_ship(x,y,size,orient)
+                    ships_result.append(random_ship)
+                    for cells in random_ship:
+                        my_field[cells['x']][cells['y']] = ships_states['KILLED']
+                    self.mark_all_cells_near_killed_as_processed(my_field)
+                    break
+        return ships_result
+
+
+
+        #     my_ship = list()
+        #     my_ship.append({'x':random.randint(0,9), 'y':random.randint(0,9)})
+        #     my_ships.append(my_ship)
+        # return my_ships
 
     def generate_own_battlefield(self):
-        self.ai_battlefield = [[{u'y': 0, u'x': 8}, {u'y': 1, u'x': 8}, {u'y': 2, u'x': 8}, {u'y': 3, u'x': 8}], [{u'y': 3, u'x': 3}, {u'y': 3, u'x': 4}, {u'y': 3, u'x': 5}], [{u'y': 6, u'x': 7}, {u'y': 7, u'x': 7}, {u'y': 8, u'x': 7}], [{u'y': 4, u'x': 1}, {u'y': 5, u'x': 1}], [{u'y': 0, u'x': 4}, {u'y': 0, u'x': 5}], [{u'y': 8, u'x': 3}, {u'y': 9, u'x': 3}], [{u'y': 5, u'x': 3}], [{u'y': 8, u'x': 1}], [{u'y': 8, u'x': 9}], [{u'y': 8, u'x': 5}]]
-        # self.ai_battlefield = self.generate_my_random_battlefield()
+        # self.ai_battlefield = [[{u'y': 0, u'x': 8}, {u'y': 1, u'x': 8}, {u'y': 2, u'x': 8}, {u'y': 3, u'x': 8}], [{u'y': 3, u'x': 3}, {u'y': 3, u'x': 4}, {u'y': 3, u'x': 5}], [{u'y': 6, u'x': 7}, {u'y': 7, u'x': 7}, {u'y': 8, u'x': 7}], [{u'y': 4, u'x': 1}, {u'y': 5, u'x': 1}], [{u'y': 0, u'x': 4}, {u'y': 0, u'x': 5}], [{u'y': 8, u'x': 3}, {u'y': 9, u'x': 3}], [{u'y': 5, u'x': 3}], [{u'y': 8, u'x': 1}], [{u'y': 8, u'x': 9}], [{u'y': 8, u'x': 5}]]
+        self.ai_battlefield = self.generate_my_random_battlefield()
         return
 
     def point_cell_as_processed(self,x,y,field):
-        if x<0 or x>9 or y<0 or y>9 or self.enemy_field[x][y]!=ships_states['INITIALIZED']:
+        if x<0 or x>9 or y<0 or y>9 or field[x][y]!=ships_states['INITIALIZED']:
             return
         # self.enemy_field[x][y] = ships_states['PROCESSED']
         field[x][y] = ships_states['PROCESSED']
