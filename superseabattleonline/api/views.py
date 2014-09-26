@@ -241,29 +241,8 @@ class Game(object):
         events_to_send = []
         for i in range(self.first_player_response_received_id, self.first_player_response_id, 1):
             events_to_send.append(self.first_player_to_message_queue[i])
-        # self.first_player_response_received_id = self.first_player_response_id
         return events_to_send
 
-    # def ai_player_shoot(self):
-    #     x,y = self.ai_player.make_shoot()
-    #     result = ships_states['MISSED']
-    #     if result in [ships_states['WOUNDED'], ships_states['KILLED']]:
-    #         self.game_state = "second-player-move"
-    #         first_user_action = "move-off"
-    #         second_user_action = "move-on"
-    #     else:
-    #         self.game_state = "first-player-move"
-    #         first_user_action = "move-on"
-    #         second_user_action = "move-off"
-    #     self.first_player_response_id += 1
-    #     self.first_player_to_message_queue.append({"name":first_user_action,"id":self.first_player_response_id,"start":int(time.time()), "payload":{"register-rival-shoot":{"y":y,"x":x,"state":result}}})
-    #     self.second_player_response_id += 1
-    #     self.second_player_to_message_queue.append({"name":second_user_action,"id":self.second_player_response_id,"start":int(time.time()), "payload":{"register-self-shoot":{"y":y,"x":x,"state":result}}})
-    #     # if result in [ships_states['WOUNDED'], ships_states['KILLED']]:
-    #     #     self.game_state = "first-player-move"
-    #     # else:
-    #     #     self.game_state = "second-player-move"
-    #     return
 
     def check_are_all_ships_killed(self, user_num):
         first_player_ships_killed = True
