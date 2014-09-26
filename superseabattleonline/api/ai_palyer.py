@@ -51,16 +51,16 @@ class AIplayer(object):
         field[x][y] = ships_states['PROCESSED']
         return
 
-    def point_wounded_cell(self,x,y):
+    def point_wounded_cell(self,x,y,field):
         x1 = x -1
         x2 = x+1
         y1 = y -1
         y2 = y +1
-        self.enemy_field[x][y]=ships_states['WOUNDED']
-        self.point_cell_as_processed(x1,y1,self.enemy_field)
-        self.point_cell_as_processed(x1,y2,self.enemy_field)
-        self.point_cell_as_processed(x2,y1,self.enemy_field)
-        self.point_cell_as_processed(x2,y2,self.enemy_field)
+        field[x][y]=ships_states['WOUNDED']
+        self.point_cell_as_processed(x1,y1,field)
+        self.point_cell_as_processed(x1,y2,field)
+        self.point_cell_as_processed(x2,y1,field)
+        self.point_cell_as_processed(x2,y2,field)
         return
 
     def point_killed_cell(self,x,y,field): # mark cell as killed. all initialized cells around killed cell set as processed
@@ -72,36 +72,31 @@ class AIplayer(object):
                 self.point_cell_as_processed(x1,y1,field)
         return
 
-    def mark_cell_as_killed_and_transform_wounded_to_killed(self,x,y):
-        # self.enemy_field[x][y] = ships_states['KILLED']
-        self.point_killed_cell(x,y,self.enemy_field)
+    def mark_cell_as_killed_and_transform_wounded_to_killed(self,x,y, field):
+        self.point_killed_cell(x,y,field)
         for x1 in range(x,10,1):
-            if self.enemy_field[x1][y] not in [ships_states['WOUNDED'],ships_states['KILLED']]:
+            if field[x1][y] not in [ships_states['WOUNDED'],ships_states['KILLED']]:
                 break
-            # self.enemy_field[x1][y] = ships_states['KILLED']
-            self.point_killed_cell(x1,y,self.enemy_field)
+            self.point_killed_cell(x1,y,field)
         for x1 in range(x,-1,-1):
-            if self.enemy_field[x1][y] not in [ships_states['WOUNDED'],ships_states['KILLED']]:
+            if field[x1][y] not in [ships_states['WOUNDED'],ships_states['KILLED']]:
                 break
-            # self.enemy_field[x1][y] = ships_states['KILLED']
-            self.point_killed_cell(x1,y,self.enemy_field)
+            self.point_killed_cell(x1,y,field)
         for y1 in range(y,10,1):
-            if self.enemy_field[x][y1] not in [ships_states['WOUNDED'],ships_states['KILLED']]:
+            if field[x][y1] not in [ships_states['WOUNDED'],ships_states['KILLED']]:
                 break
-            # self.enemy_field[x][y1] = ships_states['KILLED']
-            self.point_killed_cell(x,y1,self.enemy_field)
+            self.point_killed_cell(x,y1,field)
         for y1 in range(y,-1,-1):
-            if self.enemy_field[x][y1] not in [ships_states['WOUNDED'],ships_states['KILLED']]:
+            if field[x][y1] not in [ships_states['WOUNDED'],ships_states['KILLED']]:
                 break
-            # self.enemy_field[x][y1] = ships_states['KILLED']
-            self.point_killed_cell(x,y1,self.enemy_field)
+            self.point_killed_cell(x,y1,field)
         return
 
-    def mark_all_cells_near_killed_as_processed(self):
+    def mark_all_cells_near_killed_as_processed(self, field):
         for x in range(0,10,1):
             for y in range (0,10,1):
-                if self.enemy_field[x][y]==ships_states['KILLED']:
-                    self.point_killed_cell(x,y,self.enemy_field)
+                if field[x][y]==ships_states['KILLED']:
+                    self.point_killed_cell(x,y,field)
 
 
     def make_shoot(self):
@@ -121,11 +116,11 @@ class AIplayer(object):
                 if 'register-self-shoot' in payload:
                     succ_self_shoot = payload['register-self-shoot']
                     if succ_self_shoot['state']==ships_states['KILLED']:
-                        self.mark_cell_as_killed_and_transform_wounded_to_killed(succ_self_shoot['x'],succ_self_shoot['y'])
+                        self.mark_cell_as_killed_and_transform_wounded_to_killed(succ_self_shoot['x'],succ_self_shoot['y'], self.enemy_field)
                     if succ_self_shoot['state']==ships_states['WOUNDED']:
-                        self.point_wounded_cell(succ_self_shoot['x'],succ_self_shoot['y'])
+                        self.point_wounded_cell(succ_self_shoot['x'],succ_self_shoot['y'],self.enemy_field)
 
-        self.mark_all_cells_near_killed_as_processed()
+        self.mark_all_cells_near_killed_as_processed(self.enemy_field)
         for x in range(0,10,1):
             for y in range(0,10,1):
                 if self.enemy_field[x][y]==ships_states['WOUNDED']: # we have wonded cell which is not killed yet - try to kill this ship
