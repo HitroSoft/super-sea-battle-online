@@ -1,8 +1,30 @@
 __author__ = 'yrafalsky'
-import git
+"""
+sudo su - root
+cd /home/ubuntu/
+copy this script there
+run it
+script will install git, GitPython
+after that it will clone project to BASE_DIR/super-sea-battle-online
+after that it will checkout deploy_to_server branch
+after that it will run manage.py
+
+each 30 seconds script checks for changes in git in deploy_to_server branch.
+If there are changes - kill server - fetch origin - reset branch to new origin - start server
+
+Script depends on nginx.
+"""
+
+
 import os
 import time
 import subprocess
+
+# prepare everything for this script work
+subprocess.call(("apt-get install git -y").split(" "))
+subprocess.call(("pip install GitPython").split(" "))
+
+import git
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 target_folder= os.path.join(BASE_DIR,"super-sea-battle-online")
