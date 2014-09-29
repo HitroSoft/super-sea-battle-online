@@ -26,6 +26,8 @@ def exec_command_and_get_result(the_command):
     aaz= subprocess.Popen(args=(the_command).split(" "),stdout=subprocess.PIPE)
     output, err = aaz.communicate()
     print ("Executed=" + str(the_command))
+    if output.endswith("\n"):
+        output = output[:output.__len__()-1]
     print ("Result=" + str(output))
     print("Errors = " + str(err))
     return output
