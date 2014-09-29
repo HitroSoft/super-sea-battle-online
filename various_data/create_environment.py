@@ -39,7 +39,8 @@ def fetch_from_remote_github(pre_checkout=True):
 def kill_server():
     bb=subprocess.Popen(['pgrep','-f',"/usr/bin/python manage.py"],stdout=subprocess.PIPE)
     output, err = bb.communicate()
-    print "grep_result = " + output
+    print "grep_result = " + str(output)
+    print "grep_errors = " + str(err)
     print "process_id="+output.split("\n")[0]
     subprocess.Popen(['sudo','kill','-9',output.split("\n")[0]])
     print "server killed"
