@@ -23,7 +23,7 @@ import subprocess
 
 def exec_command_and_get_result(the_command):
     print("=================")
-    aaz= subprocess.Popen((the_command).split(" "),stdout=subprocess.PIPE)
+    aaz= subprocess.Popen(args=(the_command).split(" "),stdout=subprocess.PIPE)
     output, err = aaz.communicate()
     print ("Executed=" + the_command)
     print ("Result=" + str(output))
@@ -61,7 +61,8 @@ os.chdir(target_folder)
 
 fetch_from_remote_github(pre_checkout=True)
 
-exec_command_and_get_result("python manage.py runserver 0.0.0.0:8000 &")
+os.system("python manage.py runserver 0.0.0.0:8000 &")
+
 print "server started"
 while True:
 
@@ -77,6 +78,7 @@ while True:
         print "changes detected"
         kill_server()
         fetch_from_remote_github(pre_checkout=False)
-        exec_command_and_get_result("python manage.py runserver 0.0.0.0:8000 &")
+        # exec_command_and_get_result("python manage.py runserver 0.0.0.0:8000 seeserver.txt &")
+        os.system("python manage.py runserver 0.0.0.0:8000 &")
         print "server started"
     time.sleep(30)
