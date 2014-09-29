@@ -30,11 +30,6 @@ def get_value_from_config(name):
 lock = threading.Lock()
 
 
-
-
-
-
-
 class Game(object):
 
     def __init__(self):
@@ -87,7 +82,6 @@ class Game(object):
 
         self.first_player_response_id += 1
         self.first_player_to_message_queue.append({"name":"chat-message","id":self.first_player_response_id,"start":int(time.time()),"payload":{"message":get_value_from_config("Greetings"),"owner":"qwe","date":int(time.time())}})
-        # {u'message': u'123', u'command': u'chat-message'}
         return
 
     def start_game(self, data):
@@ -126,13 +120,6 @@ class Game(object):
                 if cell['STATE']not in [ships_states['KILLED'],ships_states['WOUNDED']]:
                     second_player_ships_killed = False
                     break
-        # if second_player_ships_killed:
-        #     self.first_player_response_id += 1
-        #     self.first_player_to_message_queue.append({"name":"waiting-for-rival","id":self.first_player_response_id,"start":int(time.time())})
-        #
-        #
-        # # {"events":[{"name":"game-over-win","payload":{"register-self-shoot":{"y":9,"x":9,"state":1}},"id":94,"start":1411070319379}]}
-
         if first_player_ships_killed==True:
             return 2
         if second_player_ships_killed==True:
@@ -171,9 +158,6 @@ class Game(object):
                 first_user_action = 'game-over-lose'
                 self.game_state = "second-player-win"
         else:
-
-
-
             if result in [ships_states['WOUNDED'], ships_states['KILLED']]:
                 if user_num==1:
                     self.game_state = "first-player-move"
@@ -238,7 +222,6 @@ def waiting_for_event(user_id, json_data):
     if events.__len__()==0 and game.game_state=="second-player-move" and random.randint(0,3) == 0 and game.ai_allowed:
         x,y = game.ai_player.make_shoot()
         game.make_player_shoot(user_num=2,x=x, y=y)
-        # game.ai_player_shoot()
         events = game.get_unreceived_events_for_first_player()
     lock.release()
     if events.__len__()==0:
@@ -262,7 +245,6 @@ def register_shoot(user_id, json_data):
     x = json_data['shoot']['x']
     y = json_data['shoot']['y']
     game.make_player_shoot(user_num=1,x=x, y=y)
-    # game.first_player_shoot(data=json_data)
     events = game.get_unreceived_events_for_first_player()
     lock.release()
     return HttpResponse(content=json.dumps({"id":user_id, "events":events}),
