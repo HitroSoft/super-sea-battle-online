@@ -25,7 +25,7 @@ def exec_command_and_get_result(the_command):
     print("=================")
     aaz= subprocess.Popen(args=(the_command).split(" "),stdout=subprocess.PIPE)
     output, err = aaz.communicate()
-    print ("Executed=" + the_command)
+    print ("Executed=" + str(the_command))
     print ("Result=" + str(output))
     print("Errors = " + str(err))
     return output
@@ -79,6 +79,7 @@ while True:
         kill_server()
         fetch_from_remote_github(pre_checkout=False)
         # exec_command_and_get_result("python manage.py runserver 0.0.0.0:8000 seeserver.txt &")
+        print "server starting"
         os.system("python manage.py runserver 0.0.0.0:8000 &")
         print "server started"
     time.sleep(30)
