@@ -67,21 +67,23 @@ os.system("python manage.py runserver 0.0.0.0:8000 &")
 
 print "server started"
 while True:
-
+    time.sleep(30)
     output = exec_command_and_get_result("git ls-remote git://github.com/HitroSoft/super-sea-battle-online")
-    zz = output.split("\n")
+    lines = output.split("\n")
     results = dict()
-    for s in zz:
-        if s:
-            results[s.split("\t")[1]]=s.split("\t")[0]
+    for line in lines:
+        if line:
+            results[line.split("\t")[1]]=line.split("\t")[0]
+    if 'refs/heads/deploy_to_server' not in results:
+        print "Branch not detected on remote side !!! Check ethernet"
+        continue
     print results['refs/heads/deploy_to_server']
     output = exec_command_and_get_result("git --work-tree="+target_folder+" --git-dir="+target_folder+"/.git rev-parse deploy_to_server")
-    if output.split('\n')[0]!=results['refs/heads/deploy_to_server']:
+    if output!=results['refs/heads/deploy_to_server']:
         print "changes detected"
         kill_server()
         fetch_from_remote_github(pre_checkout=False)
-        # exec_command_and_get_result("python manage.py runserver 0.0.0.0:8000 seeserver.txt &")
         print "server starting"
         os.system("python manage.py runserver 0.0.0.0:8000 &")
         print "server started"
-    time.sleep(30)
+
