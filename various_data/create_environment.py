@@ -38,14 +38,28 @@ def fetch_from_remote_github(pre_checkout=True):
     exec_command_and_get_result("git --work-tree="+target_folder+" --git-dir="+target_folder+"/.git fetch origin")
     exec_command_and_get_result("git --work-tree="+target_folder+" --git-dir="+target_folder+"/.git reset --hard origin/deploy_to_server")
 
-def kill_server():
+def get_server_process_id():
     bb=subprocess.Popen(['pgrep','-f',"/usr/bin/python manage.py"],stdout=subprocess.PIPE)
     output, err = bb.communicate()
+    if output.endswith("\n"):
+        output = output[:output.__len__()-1]
     print "grep_result = " + str(output)
     print "grep_errors = " + str(err)
-    print "process_id="+output.split("\n")[0]
-    subprocess.Popen(['sudo','kill','-9',output.split("\n")[0]])
+    return output
+
+
+def kill_server():
+    server_id = get_server_process_id()
+    if not server_id:
+        print "Server not detected!!!"
+        return None
+    print "process_id="+server_id
+    subprocess.Popen(['sudo','kill','-9',server_id])
     print "server killed"
+    return server_id
+
+def update_packages_by_requirements_pip():
+    exec_command_and_get_result("pip install -r requirements.pip")
 
 
 # prepare everything for this script work
@@ -63,7 +77,9 @@ os.chdir(target_folder)
 
 fetch_from_remote_github(pre_checkout=True)
 
-os.system("python manage.py runserver 0.0.0.0:8000 &")
+update_packages_by_requirements_pip()
+
+os.system("python manage.py runserver 0.0.0.0:8000 > serveroutput.txt &")
 
 print "server started"
 while True:
@@ -83,7 +99,17 @@ while True:
         print "changes detected"
         kill_server()
         fetch_from_remote_github(pre_checkout=False)
+        update_packages_by_requirements_pip()
         print "server starting"
-        os.system("python manage.py runserver 0.0.0.0:8000 &")
+        os.system("python manage.py runserver 0.0.0.0:8000 > serveroutput.txt &")
         print "server started"
+    else:
+        server_id = get_server_process_id()
+        if not server_id:
+            print "Server not detected!!! Staring server !!!"
+            print "server starting"
+            os.system("python manage.py runserver 0.0.0.0:8000 > serveroutput.txt &")
+            print "server started"
+
+
 
