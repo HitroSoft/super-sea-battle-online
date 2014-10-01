@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /services
+Sitemap: http://sea-battle.pp.ua/sitemap.xml
