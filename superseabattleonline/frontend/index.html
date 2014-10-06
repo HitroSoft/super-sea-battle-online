@@ -279,73 +279,7 @@
 </footer>
 </div>
 
-<!-- sda -->
-<script>
-    (function () {
-        function shuffle(o) {
-            for (var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
 
-            return o;
-        }
-
-        var sda = [
-            '<div class="sda-block sda-block__google"><script async="async" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></s' + 'cript><ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-2693394875594183" data-ad-slot="2533875692"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</' + 'script></div>',
-
-            '<div class="sda-block sda-block__local"><div class="sda-block-gap"><div class="durak">Разложите <a class="durak-link" href="http://razlozhi.ru/?from=mb">пасьянсы</a>, <a href="http://razlozhi.ru/durak/2-players?from=mb">сыграйте в «Дурака»</a> или попробуйте новую игру «<a href="http://ru.dots-game.org/?from=mb">Точки и палочки</a>»</div></div></div>',
-
-            '<div class="sda-block sda-block__local"><div class="sda-block-gap">Try a new logic game «<a href="http://en.dots-game.org/?from=mb">Dots and Boxes</a>»</div></div>',
-
-            '<div class="sda-block sda-block__local"><div class="sda-block-gap">Zagraj w nową grę «<a href="http://pl.dots-game.org/?from=mb">Szewc</a>»</div></div>',
-
-            '<div class="sda-block sda-block__local"><div class="sda-block-gap">Jouer un nouveau jeu «<a href="http://fr.dots-game.org/?from=mb">La Pipopipette</a>»</div></div>',
-
-            '<div class="sda-block sda-block__local"><div class="sda-block-gap">Speel een nieuw spel «<a href="http://nl.dots-game.org/?from=mb">Kamertje verhuren</a>»</div></div>',
-
-            '<div class="sda-block sda-block__local"><div class="sda-block-gap">Ein neues Spiel zu spielen «<a href="http://de.dots-game.org/?from=mb">Käsekästchen</a>»</div></div>',
-
-            '<div class="sda-block sda-block__local"><div class="sda-block-gap">Prova un nuovo gioco di logica «<a href="http://it.dots-game.org/?from=mb">Punti e linee</a>»</div></div>',
-
-            '<div class="sda-block sda-block__local"><div class="sda-block-gap">Love games? Try playing offline quest game at <a class="link" href="http://saveamsterdam.com/?from=mb">#SaveAmsterdam</a>.</div></div>',
-
-            '<div class="sda-block sda-block__google"><script async="async" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></s' + 'cript><ins class="adsbygoogle" style="display:inline-block;width:728px;height:15px" data-ad-client="ca-pub-2693394875594183" data-ad-slot="6105552097"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</' + 'script></div>'
-        ];
-
-        var pos = 0;
-
-        function matchLanguage(lang) {
-            return location.host.indexOf(lang + ".") != -1
-                    || location.pathname.indexOf("/" + lang + "/") != -1;
-        }
-
-        if (matchLanguage("ru")) {
-            if (document.referrer.indexOf("razlozhi.") == -1 && location.search.indexOf("rzlzh") == -1) {
-                pos = shuffle([0, 1])[0];
-            }
-        } else if (matchLanguage("en")) {
-            pos = 8; //shuffle([0, 2])[0];
-        } else if (matchLanguage("pl")) {
-            pos = shuffle([0, 3])[0];
-        } else if (matchLanguage("fr")) {
-            pos = shuffle([0, 4])[0];
-        } else if (matchLanguage("nl")) {
-            pos = 8;
-        } else if (matchLanguage("de")) {
-            pos = shuffle([0, 6])[0];
-        } else if (matchLanguage("it")) {
-            pos = shuffle([0, 7])[0];
-        } else if (matchLanguage("vk")) {
-            pos = 0;
-        }
-
-        try {
-            if (matchLanguage("vk") || top.location == self.location) {
-                document.write('<div class="sda sda__vh" id="sda">' + sda[pos] + '</div>');
-            }
-        } catch (exception) {
-        }
-    })();
-</script>
-<!-- //sda -->
 
 <script>
     if (top.location != self.location) {
